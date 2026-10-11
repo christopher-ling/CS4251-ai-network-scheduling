@@ -1,6 +1,6 @@
-# Lab 3: optional coordinated admission prototype
+# Experiment 3: coordinated collective admission
 
-This is a teaching implementation, not a claimed novel congestion-aware scheduler. It adds a reversible patch at the point where a ready collective would otherwise launch. It does not change GPU placement, routing, workload dependencies, or the ring collective implementation.
+This is an experimental admission prototype; algorithmic novelty and general performance benefits have not been established. It adds a reversible patch at the point where a ready collective would otherwise launch. It does not change GPU placement, routing, workload dependencies, or the ring collective implementation.
 
 ## Policies
 
@@ -26,9 +26,9 @@ CS4251_RUN_POLICIES=1 python3 scripts/run_learning_experiments.py \
   --astra /app/astra-sim --output results/policy_experiments
 ```
 
-Christopher's local checkout already has this patch applied. Do not apply it a second time there. The default/unset `CS4251_POLICY` retains immediate behavior. The generator passes an explicit policy for every run and writes the source diff beside the results.
+The existing local development checkout already has this patch applied. Do not apply it a second time there. The default/unset `CS4251_POLICY` retains immediate behavior. The generator passes an explicit policy for every run and writes the source diff beside the results.
 
-## Supported teaching workload
+## Supported workload assumptions
 
 This patch is intentionally limited to the generated traces: explicit nonzero, disjoint communication groups; identical collective node IDs and operation order across each group's ranks; one dependent collective at a time per rank; one simulator invocation per process. All participants must eventually reach the matching operation. It is not a general production scheduler and should not be enabled for arbitrary profiled traces.
 
@@ -48,7 +48,7 @@ Size + aging reduces mean JCT by about 14.0% versus FIFO, but only 0.30% versus 
 
 ## Verification
 
-The optional build succeeded. Immediate runs reproduce the unpatched reference timings. Each policy run reports all 16 endpoints finished. Logs show exactly six admitted collectives (three per group), six matching group completions, and no overlap between global slots. Admission wait equals start minus readiness; all waiting and the 1 ns decision delay remain in final completion time.
+The patched simulator compiled successfully. Immediate runs reproduce the unpatched reference timings. Each policy run reports all 16 endpoints finished. Logs show exactly six admitted collectives (three per group), six matching group completions, and no overlap between global slots. Admission wait equals start minus readiness; all waiting and the 1 ns decision delay remain in final completion time.
 
 Read `CS4251 admit` and `CS4251 complete` lines in the saved logs, as well as `summary.csv` and `policy-summary.csv`. No packet-loss or queue-occupancy measurements are claimed.
 

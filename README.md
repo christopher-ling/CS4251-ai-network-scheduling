@@ -1,97 +1,95 @@
-# CS4251: AI Network Scheduling
+# CS4251 · Network Scheduling for Distributed AI Training
 
-We are investigating how already-running distributed AI training jobs should share network resources. GPU assignments stay fixed; our proposed scheduler will control when collective communication proceeds.
+Reproducible ASTRA-sim experiments for studying collective communication contention and admission policies across concurrent training workloads.
 
-## The idea in plain language
+**Status:** preliminary experiments and an optional admission prototype. The project’s final congestion-aware algorithm and broader evaluation are in development.
 
-A training job uses several workers, often GPUs. Each worker computes suggested model changes called gradients. An AllReduce operation combines these values and returns the combined result to every participating worker. The workers update their model copies and repeat.
+## Research scope
 
-When independent jobs send data through the same limited-capacity links, their traffic can compete. We plan to test whether organizing communication can improve completion times while avoiding excessive waiting for individual jobs.
+The project evaluates network scheduling for already-running distributed training jobs. GPU placement, routing, and collective algorithms are held fixed during scheduling-policy comparisons. The objective is to reduce mean job completion time while accounting for scheduler-induced waiting and per-job slowdown.
 
-## Current progress
+ASTRA-sim is used for execution-timing simulation. Current workloads are synthetic dependency graphs rather than profiled model training runs.
 
-- Built the Docker environment and ASTRA-sim analytical backend on an M1 Mac.
-- Ran the supplied AllGather example as an installation check.
-- Ran a 16-worker ring AllReduce microbenchmark with the congestion-aware analytical backend.
-- Compared 50 GB/s and 25 GB/s link bandwidth with workload, topology, latency, and system settings unchanged.
-- Saved both AllReduce logs, input configurations, and simulator/submodule version records.
+## Getting started
 
-Synthetic compute–AllReduce chains and independent shared-link jobs are now verified. An optional teaching admission prototype was compiled and tested with FIFO and size/aging policies; it is not a validated new congestion-aware algorithm.
+Follow [Installation and quickstart](labs/00-quickstart.md) to clone the pinned simulator, build the Docker environment, and mount both repositories.
 
-## First measured experiment
+With the environment configured, run inside Docker:
 
-| Configured link bandwidth | Reported AllReduce completion time |
-|---|---:|
-| 50 GB/s | 99,640 cycles |
-| 25 GB/s | 136,240 cycles |
+```sh
+# Single-collective bandwidth experiment
+bash /app/team/scripts/run_bandwidth_lab.sh /app/astra-sim
 
-All 16 workers (IDs 0–15) reported completion at the listed time in each run. Halving bandwidth increased completion time by approximately 36.7%. These are simulated collective timings, not laptop execution time or full training-job JCT. Source inspection confirms a 1 ns tick in this pinned analytical setup: these times equal 99.64 and 136.24 microseconds.
-
-The supplied trace has `comm_size = 1048576` bytes (1 MiB) per rank. This is not the total on-wire collective traffic. The topology is a 16-endpoint ring with configured latency 500 ns. The system selects ring AllReduce and requests four dataset splits.
-
-This experiment demonstrates bandwidth sensitivity. It does not demonstrate contention between independent jobs, packet loss, or improvement from a new scheduler.
-
-## Reproduce the lab
-
-Start with [the complete installation and learning quickstart](labs/00-quickstart.md).
-
-- [Lab 1: AllReduce bandwidth](labs/01-allreduce-bandwidth.md)
-- [Lab 2: training cycles and shared contention](labs/02-training-and-contention.md)
-- [Lab 3: optional admission prototype](labs/03-admission-prototype.md)
-- [Tool assessment and remaining project scope](docs/tool-assessment.md)
-
-The team scripts automate generation, launching, log capture, and completion checks. An M1 Docker run with the documented mounts was verified.
-
-The optional prototype reduces mean JCT by about 14.0% versus FIFO but only 0.30% versus immediate admission in one heterogeneous case. This motivates stronger baselines and broader evaluation, not a claim of general success.
-
-New measured results: a synthetic three-collective training cycle takes 698.920 us at 50 GB/s and 808.720 us at 25 GB/s. Two independent eight-rank jobs with shared ring routes take 3.682600 ms each versus 2.083140 ms alone (76.8% longer). A switch control shows no paired-run slowdown. See Lab 2 for workload and chunk-setting differences from Lab 1.
-
-Simulator commit used:
-
-```text
-4ce9ecfe746a3ee5fe47559a11d91644d641fa7f
+# Synthetic training cycles and shared-link experiments
+cd /app/team
+python3 scripts/run_learning_experiments.py --astra /app/astra-sim
 ```
 
-The quickstart includes cloning this pinned upstream simulator, building the Docker image/backend, and launching the experiments. Refer to the [official installation guide](https://astra-sim.github.io/astra-sim-docs/getting-started/setup.html) and [build instructions](https://astra-sim.github.io/astra-sim-docs/getting-started/build.html). This team repository contains experiment documentation and evidence; the simulator is maintained separately.
+The scripts capture inputs and logs and require completion of all 16 simulated endpoints. Outputs are written to the mounted team repository. Enabling admission-policy comparisons requires the optional patch documented in Experiment 3.
 
-## Repository contents
+## Experiments
 
-- `labs/`: explanations and reproduction commands.
-- `configs/`: copies of the network, system, and memory inputs used.
-- `results/`: saved logs and exact simulator/submodule version records.
-- `scripts/`: trace generation and experiment launchers.
-- `patches/`: optional, reversible simulator admission prototype.
-- `docs/`: tool assessment, constraints, and evaluation scope.
+| Experiment | Objective | Source changes required |
+|---|---|---|
+| [1. AllReduce bandwidth](labs/01-allreduce-bandwidth.md) | Measure collective timing at fixed workload with different link capacities | None; configuration only |
+| [2. Training cycles and contention](labs/02-training-and-contention.md) | Model compute dependencies and compare isolated versus concurrent jobs | None; generated traces and configurations |
+| [3. Collective admission](labs/03-admission-prototype.md) | Compare immediate admission, FIFO, and size-based priority with aging | Optional simulator patch |
 
-## Terms we use
+See [Development workflow](docs/development-workflow.md) for the distinction between running experiments, editing configurations, generating traces, and modifying the scheduler.
 
-| Term | Plain-language meaning |
-|---|---|
-| GPU | A processor suited to many parallel calculations. |
-| Worker / rank | A participant in a distributed job; rank is an identifier within its group. |
-| Gradient | Values describing suggested changes to model parameters. |
-| AllReduce | Combines participants' values and returns the combined result to each. |
-| Collective algorithm | A procedure implementing that exchange, such as ring AllReduce. |
-| Workload / execution trace | A description of operations and dependencies for the simulator. |
-| Chakra | The execution-trace format used here. |
-| Topology | The map of network connections; distinct from the collective algorithm. |
-| Bandwidth | Data-carrying capacity per unit time. GB/s means gigabytes per second. |
-| Latency | A communication delay. ns means nanoseconds. |
-| Contention | Transfers compete for the same limited network resource. |
-| Backend | The component that models network behavior. |
-| Microbenchmark | A small test isolating an operation. |
-| Baseline | A specified reference policy or configuration for comparison. |
-| Network scheduler | A policy controlling communication admission, order, priority, or rate. |
-| JCT | Job completion time, including waiting imposed by scheduling. |
+## Reference results
 
-## Next milestones
+| Scenario | Simulated completion time |
+|---|---:|
+| Single 16-rank AllReduce, 50 GB/s | 99.640 µs |
+| Single 16-rank AllReduce, 25 GB/s | 136.240 µs |
+| Three-collective training cycle, 50 GB/s | 698.920 µs |
+| Three-collective training cycle, 25 GB/s | 808.720 µs |
+| Shared-ring job, isolated | 2.083140 ms |
+| Shared-ring job, concurrent pair | 3.682600 ms per job |
 
-1. Teach/reproduce the completed labs and inspect their assumptions.
-2. Evaluate the optional FIFO and size/aging prototype; count scheduling delay.
-3. Select a network-state signal and a literature-grounded algorithm gap.
-4. Expand workloads, arrival patterns, and bottleneck topologies.
-5. Evaluate a proposed congestion-aware policy against matched baselines and report fairness.
+The bandwidth comparison increases collective duration by 36.7%. The shared-ring stress case increases each job’s elapsed completion time by 76.8% versus its isolated reference. The experiments use different payloads and active-chunk settings; see their specifications before comparing across rows. A nonblocking-switch control shows no concurrent-run slowdown for the disjoint endpoint groups.
 
-Changing bandwidth is a learning experiment. Scheduling comparisons will hold capacity, placement, routing, and collective algorithm fixed. Any deliberate scheduler waiting must count toward completion time.
+In the heterogeneous admission experiment, size/aging reduces mean JCT by approximately 14.0% versus FIFO and 0.30% versus immediate admission. This is one deterministic synthetic scenario, not evidence of general superiority or algorithmic novelty. The prototype uses ready-request metadata and a global admission slot, not link telemetry.
 
-Upstream ASTRA-sim is available at [astra-sim/astra-sim](https://github.com/astra-sim/astra-sim). Copied upstream configuration files retain their upstream licensing obligations; see the simulator's LICENSE.
+## Reproducibility
+
+- Simulator: [ASTRA-sim](https://github.com/astra-sim/astra-sim), commit `4ce9ecfe746a3ee5fe47559a11d91644d641fa7f`.
+- Backend: congestion-aware analytical network model.
+- Verified environment: Docker on Apple Silicon (M1).
+- Time convention: 1 ns per printed tick for the pinned analytical configuration.
+- Workload payload: the supplied `1MB` example encodes 1,048,576 bytes (1 MiB) per rank.
+- Evidence: configuration copies, logs, summaries, and recursive submodule records under `results/`.
+
+Fresh containers and experiment launchers were verified using the successfully built image. A second clean end-to-end image rebuild was not performed. The optional patch is stored separately and its diff is recorded with policy results.
+
+## Repository structure
+
+```text
+configs/    Reference network, system, and memory configurations
+scripts/    Experiment launchers and synthetic trace generator
+labs/       Installation and reproducible experiment protocols
+docs/       Architecture, terminology, workflow, and tool assessment
+patches/    Optional coordinated admission prototype
+results/    Recorded logs, summaries, input descriptions, and versions
+```
+
+Generated binary traces are excluded from version control and recreated by the generator.
+
+## Limitations and next work
+
+Current evaluation covers a bidirectional ring stress case and a nonblocking switch control. The pinned analytical backend models chunk queueing and supports one-dimensional topologies; packet loss, retransmissions, and real telemetry are outside these experiments. The admission prototype has a single global slot and limited trace assumptions.
+
+Next work is to select a network-state signal, establish a literature-grounded algorithm gap, expand workloads and bottleneck topologies, and evaluate timing and fairness against matched baselines. See [Tool assessment](docs/tool-assessment.md).
+
+## Documentation
+
+- [Terminology](docs/glossary.md)
+- [Development workflow](docs/development-workflow.md)
+- [Experiment review checklist](docs/meeting-guide.md)
+- [Official ASTRA-sim installation](https://astra-sim.github.io/astra-sim-docs/getting-started/setup.html)
+- [Official analytical build instructions](https://astra-sim.github.io/astra-sim-docs/getting-started/build.html)
+
+## Attribution
+
+ASTRA-sim is developed and maintained upstream. Copied configuration files are covered by the upstream MIT license included at [configs/UPSTREAM-LICENSE.txt](configs/UPSTREAM-LICENSE.txt). No separate license has been selected for team-authored code.

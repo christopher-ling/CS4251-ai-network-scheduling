@@ -1,8 +1,8 @@
-# Lab 1: AllReduce bandwidth experiment
+# Experiment 1: AllReduce bandwidth sensitivity
 
 ## Purpose and measured result
 
-Christopher ran this experiment on October 11, 2026, using an M1 Mac, Docker, and ASTRA-sim's congestion-aware analytical backend. Both runs reported completion for all 16 simulated workers (IDs 0–15).
+The reference experiment was run on October 11, 2026, using Apple Silicon M1, Docker, and ASTRA-sim's congestion-aware analytical backend. Both runs reported completion for all 16 simulated workers (IDs 0–15).
 
 | Configured link bandwidth | Reported completion time |
 |---|---:|
@@ -34,43 +34,29 @@ The workload argument is a prefix; ASTRA-sim reads the corresponding `all_reduce
 
 Start with [the complete quickstart](00-quickstart.md). The recorded simulator commit is `4ce9ecfe746a3ee5fe47559a11d91644d641fa7f`; submodule records are in `results/`. The Docker image and analytical backend must be built. Run the commands below inside the container at `/app/astra-sim`, with the source mounted from the host. The upstream README is separate from this team lab; do not replace it.
 
-## Prepare the changed input
+## Reproduction
+
+Use the checked-in launcher from the mounted team repository:
 
 ```sh
-cp examples/network/analytical/Ring_16npus.yml examples/network/analytical/Ring_16npus_half_bw.yml
-sed -i 's/bandwidth: \[ 50.0 \]/bandwidth: [ 25.0 ]/' examples/network/analytical/Ring_16npus_half_bw.yml
-cat examples/network/analytical/Ring_16npus_half_bw.yml
+bash /app/team/scripts/run_bandwidth_lab.sh /app/astra-sim
 ```
 
-Confirm only bandwidth differs. This `sed` command is for the Linux container.
+This launcher reads the reference configuration copies under `/app/team/configs/`, validates completion for IDs 0–15, and writes logs to `/app/team/results/bandwidth_reproduced/`. It has been executed successfully in Docker.
 
-## Run both configurations and preserve logs
+The two network files differ only in bandwidth. Inspect them before launching:
 
 ```sh
-mkdir -p results
-set -o pipefail
-for bandwidth in 50 25; do
-  network=examples/network/analytical/Ring_16npus.yml
-  if [ "$bandwidth" = 25 ]; then
-    network=examples/network/analytical/Ring_16npus_half_bw.yml
-  fi
-  ./build/astra_analytical/build/bin/AstraSim_Analytical_Congestion_Aware \
-    --workload-configuration=examples/workload/microbenchmarks/all_reduce/16npus_1MB/all_reduce \
-    --system-configuration=examples/system/native_collectives/Ring_4chunks.json \
-    --remote-memory-configuration=examples/remote_memory/analytical/no_memory_expansion.json \
-    --network-configuration="$network" \
-    2>&1 | tee "results/allreduce_${bandwidth}GBps.log" || break
-done
+diff -u /app/team/configs/Ring_16npus.yml /app/team/configs/Ring_16npus_half_bw.yml
 ```
 
-These invocations were verified individually by Christopher. The loop above packages them for convenience and has not been separately executed.
+Exit status 1 from `diff` is expected when a difference is found. The simulator invocations preserve the same workload, system, and memory inputs. See the launcher for the complete argument list.
 
-Inspect each log for all 16 IDs and completion times. Do not sum workers' times: they execute concurrently.
+## Configuration exercise
 
-```sh
-grep 'finished,' results/allreduce_50GBps.log
-grep 'finished,' results/allreduce_25GBps.log
-```
+Open the two YAML files in an editor and identify the changed field. No C++ or Python changes are required for this experiment. For an additional case, create a separate copy with a different bandwidth and use it in a separate invocation, preserving the reference inputs and writing a separate log.
+
+Record the capacity, latency, rank count, payload, and completion time. Distinguish simulated elapsed time from the host time needed to execute the simulator.
 
 ## Interpretation and limits
 

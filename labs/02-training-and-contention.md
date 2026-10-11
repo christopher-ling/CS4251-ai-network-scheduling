@@ -1,8 +1,8 @@
-# Lab 2: from one exchange to independent jobs
+# Experiment 2: synthetic training cycles and shared-link contention
 
 Run `python3 scripts/run_learning_experiments.py --astra /app/astra-sim` inside Docker from `/app/team`. See [the quickstart](00-quickstart.md) for installation and mounts.
 
-## Exercise A: what is computation in this simulation?
+## Compute-replay workload
 
 The generated trace is a chain:
 
@@ -22,7 +22,7 @@ Reference results with one active chunk per dimension and a 1 MiB collective on 
 
 These exact equalities verify the generated dependency chain's timing in this scenario. This is a synthetic fixed-work training-cycle model; it does not represent a profiled real model, its loss, optimizer, or accuracy convergence.
 
-## Exercise B: independent jobs
+## Independent communicator groups
 
 The experiment uses 16 physical endpoints on a bidirectional ring. Group A uses `[0,1,4,5,8,9,12,13]`; group B uses `[2,3,6,7,10,11,14,15]`. Group IDs 1 and 2 are explicit, nonzero communicator groups. Each group has its own AllReduce results; values are not mixed between jobs.
 
@@ -30,7 +30,7 @@ Both use three collectives of 16 MiB per rank, four 100-us compute phases, 50 GB
 
 The network uses shortest ring routes (clockwise on equal-distance ties). Example overlapping routes: A's 1 → 4 passes through 1 → 2 → 3 → 4; B's 3 → 6 passes through 3 → 4 → 5 → 6. Both need directed link 3 → 4. Other exchanges also share paths. Queue service is in-order in the analytical link model.
 
-## Exercise C: results and controls
+## Results and controls
 
 | Network / scenario | Job A completion | Job B completion |
 |---|---:|---:|
@@ -59,10 +59,6 @@ Pilot runs with one active chunk showed no slowdown for even/odd or contiguous g
 - `trace-inspection.json`: inspected supplied single-AllReduce trace.
 
 Binary traces are reproducible and ignored by Git. Logs remain measured results; descriptions and generators expose the modeling assumptions.
-
-## Explain it to a teammate
-
-“The simulator reads a to-do list for each worker. Compute operations consume modeled time. AllReduce triggers simulated exchanges along routes. Link queues can delay those exchanges. Completion releases the next operation. Our two jobs slowed down on shared ring paths, but not on a nonblocking switch with separate endpoint links.”
 
 ## Next step
 

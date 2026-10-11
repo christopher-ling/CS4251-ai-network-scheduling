@@ -1,21 +1,21 @@
 # Start here: ASTRA-sim in one lab
 
-## What the simulator actually does
+## Overview
 
-Imagine a pretend stopwatch for 16 pretend workers. The trace says what each worker does next. The system configuration decides how to implement its communication. The network model decides how long each message takes and whether it waits behind another message. When an operation finishes, dependent operations can start. The program jumps between simulated events and reports the final simulated time.
+ASTRA-sim consumes per-rank execution traces and models operation dependencies, collective execution, and network timing. The workload layer releases eligible operations, the system layer decomposes collectives into transfers, and the network backend computes transfer progress and queueing. Completion events release dependent operations.
 
-This lab does not train a model, compute numerical gradients, require 16 physical GPUs, or send real AllReduce traffic through your laptop network. It models operation timing. In the compute-replay lab, a compute node simply advances simulated time by its specified duration.
+These experiments model execution timing rather than numerical model training. Compute nodes in replay mode use specified durations. Physical accelerator hardware is not required.
 
-## What you will learn
+## Objectives
 
-1. Reproduce the single-AllReduce bandwidth comparison.
-2. Read a trace, collective configuration, and connection map.
-3. Run compute–AllReduce dependencies.
-4. Compare independent jobs alone and together on shared routes.
+- Reproduce the single-AllReduce bandwidth comparison.
+- Identify workload, system, and network inputs.
+- Model dependent compute and collective operations.
+- Compare independent jobs on shared and nonshared routes.
 
-## Before starting
+## Prerequisites
 
-Install Git and Docker Desktop (on a Mac) or Docker Engine (on Linux). Start Docker and confirm `docker info` has a Server section. Allow several GB of disk space; building dependencies can take minutes. This setup was exercised on Christopher's M1 Mac. Other host platforms have not been tested by this team.
+Install Git and Docker Desktop (on a Mac) or Docker Engine (on Linux). Start Docker and confirm `docker info` has a Server section. Allow several GB of disk space; building dependencies can take minutes. Verified host platform: Apple Silicon M1 with Docker Desktop. Other host platforms have not been tested.
 
 Use a new parent directory with two sibling checkouts. Commands in this section run in your normal host terminal, not inside Docker.
 
@@ -34,7 +34,7 @@ docker run --rm -it \
   -w /app/astra-sim cs4251-astra:local bash
 ```
 
-The image supplies Linux and dependencies. The two mounts make your simulator and team files visible inside it. The commit pin fixes the simulator source and its submodules. A clean full rebuild was not repeated for this documentation; Christopher's original build succeeded at this commit. Fresh containers and the launch scripts were verified against that built image.
+The image supplies Linux and dependencies. The two mounts make your simulator and team files visible inside it. The commit pin fixes the simulator source and its submodules. A clean full rebuild was not repeated for this documentation; The original build succeeded at this commit. Fresh containers and the launch scripts were verified against that built image.
 
 ## Inside Docker
 
@@ -56,11 +56,11 @@ Expected reference completion times:
 
 The program labels its ticks “cycles”; in this pinned analytical configuration, one tick is 1 ns. Do not generalize that conversion to arbitrary configurations or backends.
 
-## Explain before moving on
+## Inspect the inputs
 
 Open `configs/Ring_16npus.yml`: the 16 endpoints form a bidirectional physical ring, with 50 GB/s links and configured latency 500 ns. Open `configs/Ring_4chunks.json`: ring AllReduce is selected, with four preferred data splits and one active chunk per dimension. The trace is one collective with `comm_size = 1048576` bytes (1 MiB), not a whole model-training run. Each rank has its own trace file; the launch command supplies their common prefix.
 
-Ask: Did capacity change, or did workload change? Why do all workers get the AllReduce result? Why is this not evidence of a new scheduler?
+Distinguish collective payload, link capacity, collective algorithm, and physical topology. The bandwidth comparison holds the workload fixed; it is not a scheduling-policy comparison. See [Development workflow](../docs/development-workflow.md) for an editor-based inspection exercise.
 
 ## Run the next experiments
 
@@ -90,4 +90,4 @@ Type `exit` to leave the disposable container. Files under `/app/astra-sim` and 
 
 ## What comes after this lab
 
-The next research task is a live collective-admission scheduler. Existing LIFO/chunk settings are upstream behavior, not the group's new scheduler. Scheduling policy comparisons must keep workload, rank placement, routing, capacity, collective algorithm, and chunk settings fixed and count all scheduling delay.
+Experiment 3 provides an optional admission prototype. The next research task is a congestion-aware policy informed by a defined network-state signal. Existing LIFO/chunk settings are upstream behavior, not the group's new scheduler. Scheduling policy comparisons must keep workload, rank placement, routing, capacity, collective algorithm, and chunk settings fixed and count all scheduling delay.

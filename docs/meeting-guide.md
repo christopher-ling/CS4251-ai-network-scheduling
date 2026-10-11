@@ -1,28 +1,21 @@
-# Explain the work at the meeting
+# Experiment review checklist
 
-## What ASTRA-sim did
+## Bandwidth experiment
 
-ASTRA-sim read a to-do list for each simulated worker. The list specified compute operations and AllReduce exchanges. It modeled how exchanges travel through configured links and wait in queues. When an operation finished, dependent work could start. It reported simulated elapsed time.
+Identify the workload, ring collective algorithm, physical topology, payload, and time units. Show the single changed field: bandwidth. Verify all 16 ranks finish. Explain the 36.7% increase as capacity sensitivity rather than scheduler performance.
 
-The original microbenchmark had one AllReduce operation and no training computation. The new synthetic cycle has repeated compute and communication with explicit dependencies. Neither run trained an actual AI model or computed real gradients.
+## Training-cycle and contention experiment
 
-## What we learned
+Identify the three collectives, four compute phases, and their dependencies. Explain duration replay. Identify independent groups and shared routes. Compare each job against its matching isolated case. Explain the 76.8% ring slowdown, switch control, and fixed active-chunk setting.
 
-1. The Docker and simulator setup works on the M1.
-2. Halving bandwidth increased the original AllReduce timing by 36.7%.
-3. Synthetic compute–AllReduce chains have the expected dependency timing.
-4. Explicit independent jobs can share routes in one simulation; in the stress case their completion time increased by 76.8% compared with their matching isolated runs.
-5. A switch control had no shared-run slowdown for disjoint endpoints.
-6. A coordinated admission prototype works, including scheduler waiting. FIFO can be a weak baseline; size/aging helped substantially against FIFO but barely against immediate admission in the tested heterogeneous case.
+## Admission prototype
 
-## How this answers the teammate's request
+Distinguish immediate admission, FIFO, and size priority with aging. Explain group coordination, the single global slot, and included waiting. Report mean JCT, makespan, and slowdown. The measured advantage is approximately 14.0% versus FIFO and 0.30% versus immediate admission in one scenario. Link telemetry and the final congestion-aware policy remain unimplemented.
 
-The methodology is reflected in three labs and a complete installation quickstart. The README explains jargon. The repository includes launchers, trace generation, exact input descriptions, saved logs, and version records. The team can now reproduce and discuss the same scenarios instead of independently inventing configurations.
+## Reproducibility
 
-## Decisions still needed from the group
+Distinguish experiments personally reproduced by the presenter from repository reference results. Preserve versions, inputs, logs, and source changes. Review limitations before making real-system claims.
 
-Choose a network-state signal and a specific algorithm gap grounded in related work. Agree on representative workloads, arrival patterns, and a more realistic bottleneck topology. Decide whether the current analytical queue model is sufficient or ns-3 is required for the claims. Do not present the teaching size/aging policy as a new telemetry-aware algorithm.
+## Team decisions
 
-## A short presentation
-
-“Our repository now has an ASTRA-sim quickstart and three labs. We verified a bandwidth experiment, a synthetic training cycle, and two independent jobs sharing ring paths. We also tested optional coordinated admission policies. The infrastructure works, but the final congestion-aware policy and broader evaluation remain research work.”
+Select a network-state signal, algorithmic gap, representative workloads, fairness criteria, and additional bottleneck topology. Determine whether analytical queueing is sufficient or another backend is needed. Confirm citations and baseline implementation scope.
