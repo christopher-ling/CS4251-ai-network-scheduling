@@ -2,7 +2,7 @@
 
 ## Purpose and measured result
 
-The reference experiment was run on October 11, 2026, using Apple Silicon M1, Docker, and ASTRA-sim's congestion-aware analytical backend. Both runs reported completion for all 16 simulated workers (IDs 0–15).
+The reference experiment was run on ASTRA-sim's congestion-aware analytical backend. Both runs reported completion for all 16 simulated workers (IDs 0–15).
 
 | Configured link bandwidth | Reported completion time |
 |---|---:|
