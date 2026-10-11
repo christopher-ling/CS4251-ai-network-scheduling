@@ -121,7 +121,7 @@ if os.environ.get('CS4251_RUN_POLICIES') == '1':
     for policy in ('immediate', 'fifo', 'size_aging'):
         rows += run(f'heterogeneous_{policy}', ['1','2'], groups, payloads, 3, 50, policy=policy)
 with (out / 'summary.csv').open('w', newline='') as f:
-    writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+    writer = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator="\n")
     writer.writeheader()
     writer.writerows(rows)
 versions = subprocess.check_output(['git', '-C', str(astra), 'rev-parse', 'HEAD'], text=True)
