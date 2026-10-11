@@ -1,0 +1,9 @@
+[
+  "/app/astra-sim/build/astra_analytical/build/bin/AstraSim_Analytical_Congestion_Aware",
+  "--workload-configuration=/app/team/results/learning/job_A_isolated/workload",
+  "--comm-group-configuration=/app/team/results/learning/job_A_isolated/groups.json",
+  "--system-configuration=/app/team/results/learning/job_A_isolated/system.json",
+  "--remote-memory-configuration=/app/astra-sim/examples/remote_memory/analytical/no_memory_expansion.json",
+  "--network-configuration=/app/team/results/learning/job_A_isolated/network.yml",
+  "--logging-folder=/app/team/results/learning/job_A_isolated/logging"
+]

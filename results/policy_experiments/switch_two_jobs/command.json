@@ -1,0 +1,9 @@
+[
+  "/app/astra-sim/build/astra_analytical/build/bin/AstraSim_Analytical_Congestion_Aware",
+  "--workload-configuration=/app/team/results/policy_experiments/switch_two_jobs/workload",
+  "--comm-group-configuration=/app/team/results/policy_experiments/switch_two_jobs/groups.json",
+  "--system-configuration=/app/team/results/policy_experiments/switch_two_jobs/system.json",
+  "--remote-memory-configuration=/app/astra-sim/examples/remote_memory/analytical/no_memory_expansion.json",
+  "--network-configuration=/app/team/results/policy_experiments/switch_two_jobs/network.yml",
+  "--logging-folder=/app/team/results/policy_experiments/switch_two_jobs/logging"
+]

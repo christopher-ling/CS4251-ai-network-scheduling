@@ -1,0 +1,150 @@
+diff --git a/astra-sim/workload/Workload.cc b/astra-sim/workload/Workload.cc
+index 8b33979..a176183 100644
+--- a/astra-sim/workload/Workload.cc
++++ b/astra-sim/workload/Workload.cc
+@@ -14,6 +14,10 @@ LICENSE file in the root directory of this source tree.
+ #include <json/json.hpp>
+ 
+ #include <iostream>
++#include <functional>
++#include <map>
++#include <limits>
++#include <stdexcept>
+ #include <stdlib.h>
+ #include <unistd.h>
+ 
+@@ -25,6 +29,105 @@ using json = nlohmann::json;
+ typedef ChakraProtoMsg::NodeType ChakraNodeType;
+ typedef ChakraProtoMsg::CollectiveCommType ChakraCollectiveCommType;
+ 
++
++// CS4251 teaching prototype: coordinated whole-collective admission.
++// One global communication slot; no routing or GPU placement changes.
++namespace {
++using AdmissionKey = std::pair<std::string, uint64_t>;
++struct AdmissionRequest {
++    AdmissionKey key;
++    uint64_t bytes;
++    uint64_t ready;
++    size_t expected;
++    std::vector<std::function<void()>> launches;
++};
++std::map<AdmissionKey, AdmissionRequest> admission_pending;
++bool admission_busy = false;
++bool admission_event_scheduled = false;
++AdmissionKey admission_active;
++size_t admission_remaining = 0;
++uint64_t admission_sequence = 0;
++std::map<AdmissionKey, uint64_t> admission_order;
++std::string admission_policy() {
++    const char* value = std::getenv("CS4251_POLICY");
++    return value ? std::string(value) : "immediate";
++}
++void dispatch_admission(void*) {
++    admission_event_scheduled = false;
++    if (admission_busy) return;
++    auto chosen = admission_pending.end();
++    const auto policy = admission_policy();
++    const auto now = Sys::boostedTick();
++    for (auto it = admission_pending.begin(); it != admission_pending.end(); ++it) {
++        if (it->second.launches.size() != it->second.expected) continue;
++        if (chosen == admission_pending.end()) { chosen = it; continue; }
++        const bool aged = now - it->second.ready >= 200000; // 200 us, simulated
++        const bool chosen_aged = now - chosen->second.ready >= 200000;
++        bool prefer = false;
++        if (policy == "size_aging" && aged != chosen_aged) prefer = aged;
++        else if (policy == "size_aging" && !aged && it->second.bytes != chosen->second.bytes)
++            prefer = it->second.bytes < chosen->second.bytes;
++        else prefer = admission_order[it->first] < admission_order[chosen->first];
++        if (prefer) chosen = it;
++    }
++    if (chosen == admission_pending.end()) return;
++    AdmissionRequest request = std::move(chosen->second);
++    admission_pending.erase(chosen);
++    admission_order.erase(request.key);
++    admission_active = request.key;
++    admission_remaining = request.expected;
++    admission_busy = true;
++    LoggerFactory::get_logger("workload")->info(
++        "CS4251 admit policy={} group={} node={} ready_ns={} start_ns={} wait_ns={} bytes={}",
++        policy, request.key.first, request.key.second, request.ready, now,
++        now - request.ready, request.bytes);
++    for (auto& launch : request.launches) launch();
++}
++void request_dispatch(Workload* workload) {
++    if (admission_busy || admission_event_scheduled) return;
++    admission_event_scheduled = true;
++    // One-nanosecond decision delay batches ranks ready at the same instant.
++    workload->sys->comm_NI->sim_schedule({NS, 1}, dispatch_admission, nullptr);
++}
++void finish_admission(Workload* workload, const std::shared_ptr<Chakra::FeederV3::ETFeederNode>& node) {
++    if (admission_policy() == "immediate") return;
++    const AdmissionKey key{node->pg_name<std::string>(""), node->id()};
++    if (!admission_busy || key != admission_active || admission_remaining == 0)
++        throw std::runtime_error("CS4251 mismatched collective completion");
++    if (--admission_remaining == 0) {
++        LoggerFactory::get_logger("workload")->info(
++            "CS4251 complete group={} node={} end_ns={}", key.first, key.second, Sys::boostedTick());
++        admission_busy = false;
++        request_dispatch(workload);
++    }
++}
++} // namespace
++
++void Workload::issue_coll_comm(std::shared_ptr<Chakra::FeederV3::ETFeederNode> node) {
++    const auto policy = admission_policy();
++    if (policy == "immediate") { issue_coll_comm_direct(node); return; }
++    if (policy != "fifo" && policy != "size_aging")
++        throw std::runtime_error("CS4251_POLICY must be immediate, fifo or size_aging");
++    const auto group = node->pg_name<std::string>("");
++    if (group.empty() || group == "0" || comm_groups.count(std::stoi(group)) == 0)
++        throw std::runtime_error("CS4251 requires explicit nonzero groups and matching node IDs across ranks");
++    const AdmissionKey key{group, node->id()};
++    const auto bytes = node->comm_size<uint64_t>();
++    const auto expected = comm_groups.at(std::stoi(group))->involved_NPUs.size();
++    auto it = admission_pending.find(key);
++    if (it == admission_pending.end()) {
++        AdmissionRequest request{key, bytes, Sys::boostedTick(), expected, {}};
++        it = admission_pending.emplace(key, std::move(request)).first;
++        admission_order[key] = admission_sequence++;
++    }
++    if (it->second.bytes != bytes || it->second.expected != expected)
++        throw std::runtime_error("CS4251 inconsistent collective participants");
++    it->second.launches.push_back([this, node] { this->issue_coll_comm_direct(node); });
++    if (it->second.launches.size() > expected)
++        throw std::runtime_error("CS4251 duplicate collective participant");
++    request_dispatch(this);
++}
++
+ Workload::Workload(Sys* sys, string et_filename, string comm_group_filename) {
+     string workload_filename = et_filename + "." + to_string(sys->id) + ".et";
+     // Check if workload filename exists
+@@ -301,7 +404,7 @@ void Workload::issue_comm(shared_ptr<Chakra::FeederV3::ETFeederNode> node) {
+     }
+ }
+ 
+-void Workload::issue_coll_comm(
++void Workload::issue_coll_comm_direct(
+     shared_ptr<Chakra::FeederV3::ETFeederNode> node) {
+     const bool has_involve_dims = node->has_attr("involve_dims");
+     std::vector<bool> involved_dims;
+@@ -493,6 +596,7 @@ void Workload::call(EventType event, CallData* data) {
+             this->local_mem_usage_tracker->recordEnd(node, Sys::boostedTick());
+         }
+ 
++        finish_admission(this, node);
+         this->et_feeder->getDependancyResolver().finish_node(node_id);
+ 
+         issue_dep_free_nodes();
+diff --git a/astra-sim/workload/Workload.hh b/astra-sim/workload/Workload.hh
+index 7a06fec..00730b6 100644
+--- a/astra-sim/workload/Workload.hh
++++ b/astra-sim/workload/Workload.hh
+@@ -45,6 +45,7 @@ class Workload : public Callable {
+     void issue_comp(std::shared_ptr<Chakra::FeederV3::ETFeederNode> node);
+     void issue_comm(std::shared_ptr<Chakra::FeederV3::ETFeederNode> node);
+     void issue_coll_comm(std::shared_ptr<Chakra::FeederV3::ETFeederNode> node);
++    void issue_coll_comm_direct(std::shared_ptr<Chakra::FeederV3::ETFeederNode> node);
+     void issue_send_comm(std::shared_ptr<Chakra::FeederV3::ETFeederNode> node);
+     void issue_recv_comm(std::shared_ptr<Chakra::FeederV3::ETFeederNode> node);
+     void skip_invalid(std::shared_ptr<Chakra::FeederV3::ETFeederNode> node);

@@ -1,4 +1,4 @@
-# Lab 2: AllReduce bandwidth experiment
+# Lab 1: AllReduce bandwidth experiment
 
 ## Purpose and measured result
 
@@ -9,12 +9,12 @@ Christopher ran this experiment on October 11, 2026, using an M1 Mac, Docker, an
 | 50 GB/s | 99,640 cycles |
 | 25 GB/s | 136,240 cycles |
 
-Halving bandwidth increased completion time by 36.7%. Preserve the log's label “cycles” until the checked-out source's time convention is verified. These values describe the supplied collective microbenchmark, not a complete training job or multi-job experiment.
+Halving bandwidth increased completion time by 36.7%. Source inspection verified a 1 ns tick for this pinned analytical setup; the times equal 99.64 and 136.24 microseconds. These values describe the supplied collective microbenchmark, not a complete training job or multi-job experiment.
 
 ## Vocabulary and inputs
 
 - AllReduce: combines participating workers' values and returns the combined result to each.
-- Workload: execution traces describing what operations happen. The example folder is labeled `16npus_1MB`; exact trace payload semantics still need inspection.
+- Workload: execution traces describing what operations happen. The example folder is labeled `16npus_1MB`; decoding confirms 1048576 bytes (1 MiB) per rank.
 - System configuration: selects the ring collective implementation and requests four dataset splits/chunks.
 - Network configuration: a 16-endpoint ring, configured 500 ns latency, and either 50 or 25 GB/s bandwidth.
 - Backend: the simulator component modeling network behavior.
@@ -32,7 +32,7 @@ The workload argument is a prefix; ASTRA-sim reads the corresponding `all_reduce
 
 ## Prerequisites
 
-Use the same upstream source/submodule versions as Christopher's checkout (record still pending). The Docker image and analytical backend must be built. Run the commands below inside the container at `/app/astra-sim`, with the source mounted from the host. The upstream README is separate from this team lab; do not replace it.
+Start with [the complete quickstart](00-quickstart.md). The recorded simulator commit is `4ce9ecfe746a3ee5fe47559a11d91644d641fa7f`; submodule records are in `results/`. The Docker image and analytical backend must be built. Run the commands below inside the container at `/app/astra-sim`, with the source mounted from the host. The upstream README is separate from this team lab; do not replace it.
 
 ## Prepare the changed input
 
@@ -80,4 +80,4 @@ Lower capacity increased communication time. The total did not double because ot
 
 Save the simulator commit, recursive submodule commits, Docker image identity, input files, commands, and logs. Example measurements are reproducible only with a matching setup; other versions may differ.
 
-Next research milestone: compute–communication dependencies, followed by separate jobs sharing physical links in one simulation.
+Continue to [Lab 2](02-training-and-contention.md) for verified compute–communication chains and separate jobs sharing physical links.

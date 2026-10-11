@@ -1,0 +1,30 @@
+{
+  "active_groups": [
+    "1"
+  ],
+  "groups": {
+    "1": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ]
+  },
+  "payload_bytes_per_rank": 1048576,
+  "iterations": 3,
+  "compute_phase_us": 100,
+  "final_compute_us": 100,
+  "scheduler": "immediate readiness; unmodified upstream"
+}

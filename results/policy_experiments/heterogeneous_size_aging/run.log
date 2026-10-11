@@ -1,0 +1,129 @@
+[2026-10-11 16:21:02.173] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 16 index in ring: 0 offset: 1 total nodes in ring: 16
+[2026-10-11 16:21:02.173] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 16 index in ring: 0 offset: 1 total nodes in ring: 16
+[2026-10-11 16:21:02.173] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 16 index in ring: 0 offset: 1 total nodes in ring: 16
+[2026-10-11 16:21:02.173] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 16 index in ring: 0 offset: 1 total nodes in ring: 16
+[2026-10-11 16:21:02.180] [workload] [info] CS4251 admit policy=size_aging group=2 node=1 ready_ns=100000 start_ns=100001 wait_ns=1 bytes=1048576
+[2026-10-11 16:21:02.180] [system::topology::RingTopology] [info] custom ring, id: 2, dimension: local total nodes in ring: 8 index in ring: 0 total nodes in ring 8
+[2026-10-11 16:21:02.180] [system::topology::RingTopology] [info] custom ring, id: 3, dimension: local total nodes in ring: 8 index in ring: 1 total nodes in ring 8
+[2026-10-11 16:21:02.180] [system::topology::RingTopology] [info] custom ring, id: 6, dimension: local total nodes in ring: 8 index in ring: 2 total nodes in ring 8
+[2026-10-11 16:21:02.180] [system::topology::RingTopology] [info] custom ring, id: 7, dimension: local total nodes in ring: 8 index in ring: 3 total nodes in ring 8
+[2026-10-11 16:21:02.180] [system::topology::RingTopology] [info] custom ring, id: 10, dimension: local total nodes in ring: 8 index in ring: 4 total nodes in ring 8
+[2026-10-11 16:21:02.180] [system::topology::RingTopology] [info] custom ring, id: 11, dimension: local total nodes in ring: 8 index in ring: 5 total nodes in ring 8
+[2026-10-11 16:21:02.180] [system::topology::RingTopology] [info] custom ring, id: 14, dimension: local total nodes in ring: 8 index in ring: 6 total nodes in ring 8
+[2026-10-11 16:21:02.180] [system::topology::RingTopology] [info] custom ring, id: 15, dimension: local total nodes in ring: 8 index in ring: 7 total nodes in ring 8
+[2026-10-11 16:21:02.180] [workload] [info] CS4251 complete group=2 node=1 end_ns=136901
+[2026-10-11 16:21:02.180] [workload] [info] CS4251 admit policy=size_aging group=1 node=1 ready_ns=100000 start_ns=136902 wait_ns=36902 bytes=16777216
+[2026-10-11 16:21:02.180] [system::topology::RingTopology] [info] custom ring, id: 0, dimension: local total nodes in ring: 8 index in ring: 0 total nodes in ring 8
+[2026-10-11 16:21:02.180] [system::topology::RingTopology] [info] custom ring, id: 1, dimension: local total nodes in ring: 8 index in ring: 1 total nodes in ring 8
+[2026-10-11 16:21:02.180] [system::topology::RingTopology] [info] custom ring, id: 4, dimension: local total nodes in ring: 8 index in ring: 2 total nodes in ring 8
+[2026-10-11 16:21:02.180] [system::topology::RingTopology] [info] custom ring, id: 5, dimension: local total nodes in ring: 8 index in ring: 3 total nodes in ring 8
+[2026-10-11 16:21:02.180] [system::topology::RingTopology] [info] custom ring, id: 8, dimension: local total nodes in ring: 8 index in ring: 4 total nodes in ring 8
+[2026-10-11 16:21:02.180] [system::topology::RingTopology] [info] custom ring, id: 9, dimension: local total nodes in ring: 8 index in ring: 5 total nodes in ring 8
+[2026-10-11 16:21:02.180] [system::topology::RingTopology] [info] custom ring, id: 12, dimension: local total nodes in ring: 8 index in ring: 6 total nodes in ring 8
+[2026-10-11 16:21:02.180] [system::topology::RingTopology] [info] custom ring, id: 13, dimension: local total nodes in ring: 8 index in ring: 7 total nodes in ring 8
+[2026-10-11 16:21:02.181] [workload] [info] CS4251 complete group=1 node=1 end_ns=704792
+[2026-10-11 16:21:02.181] [workload] [info] CS4251 admit policy=size_aging group=2 node=3 ready_ns=235641 start_ns=704793 wait_ns=469152 bytes=1048576
+[2026-10-11 16:21:02.182] [workload] [info] CS4251 complete group=2 node=3 end_ns=741693
+[2026-10-11 16:21:02.182] [workload] [info] CS4251 admit policy=size_aging group=1 node=3 ready_ns=784262 start_ns=804793 wait_ns=20531 bytes=16777216
+[2026-10-11 16:21:02.183] [workload] [info] CS4251 complete group=1 node=3 end_ns=1372683
+[2026-10-11 16:21:02.183] [workload] [info] CS4251 admit policy=size_aging group=2 node=5 ready_ns=840433 start_ns=1372684 wait_ns=532251 bytes=1048576
+[2026-10-11 16:21:02.183] [workload] [info] CS4251 complete group=2 node=5 end_ns=1409584
+[2026-10-11 16:21:02.184] [workload] [info] CS4251 admit policy=size_aging group=1 node=5 ready_ns=1452153 start_ns=1472684 wait_ns=20531 bytes=16777216
+[2026-10-11 16:21:02.184] [workload] [info] sys[15] finished, 1508324 cycles, exposed communication 1108324 cycles.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[15]. Post statistics processing start.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[15]. Post statistics processing end.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[15], Wall time: 1508324
+[2026-10-11 16:21:02.184] [statistics] [info] sys[15], GPU time: 400000
+[2026-10-11 16:21:02.184] [statistics] [info] sys[15], Comm time: 1108324
+[2026-10-11 16:21:02.184] [workload] [info] sys[3] finished, 1508324 cycles, exposed communication 1108324 cycles.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[3]. Post statistics processing start.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[3]. Post statistics processing end.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[3], Wall time: 1508324
+[2026-10-11 16:21:02.184] [statistics] [info] sys[3], GPU time: 400000
+[2026-10-11 16:21:02.184] [statistics] [info] sys[3], Comm time: 1108324
+[2026-10-11 16:21:02.184] [workload] [info] sys[7] finished, 1508324 cycles, exposed communication 1108324 cycles.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[7]. Post statistics processing start.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[7]. Post statistics processing end.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[7], Wall time: 1508324
+[2026-10-11 16:21:02.184] [statistics] [info] sys[7], GPU time: 400000
+[2026-10-11 16:21:02.184] [statistics] [info] sys[7], Comm time: 1108324
+[2026-10-11 16:21:02.184] [workload] [info] sys[11] finished, 1508324 cycles, exposed communication 1108324 cycles.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[11]. Post statistics processing start.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[11]. Post statistics processing end.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[11], Wall time: 1508324
+[2026-10-11 16:21:02.184] [statistics] [info] sys[11], GPU time: 400000
+[2026-10-11 16:21:02.184] [statistics] [info] sys[11], Comm time: 1108324
+[2026-10-11 16:21:02.184] [workload] [info] sys[14] finished, 1509584 cycles, exposed communication 1109584 cycles.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[14]. Post statistics processing start.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[14]. Post statistics processing end.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[14], Wall time: 1509584
+[2026-10-11 16:21:02.184] [statistics] [info] sys[14], GPU time: 400000
+[2026-10-11 16:21:02.184] [statistics] [info] sys[14], Comm time: 1109584
+[2026-10-11 16:21:02.184] [workload] [info] sys[2] finished, 1509584 cycles, exposed communication 1109584 cycles.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[2]. Post statistics processing start.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[2]. Post statistics processing end.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[2], Wall time: 1509584
+[2026-10-11 16:21:02.184] [statistics] [info] sys[2], GPU time: 400000
+[2026-10-11 16:21:02.184] [statistics] [info] sys[2], Comm time: 1109584
+[2026-10-11 16:21:02.184] [workload] [info] sys[6] finished, 1509584 cycles, exposed communication 1109584 cycles.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[6]. Post statistics processing start.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[6]. Post statistics processing end.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[6], Wall time: 1509584
+[2026-10-11 16:21:02.184] [statistics] [info] sys[6], GPU time: 400000
+[2026-10-11 16:21:02.184] [statistics] [info] sys[6], Comm time: 1109584
+[2026-10-11 16:21:02.184] [workload] [info] sys[10] finished, 1509584 cycles, exposed communication 1109584 cycles.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[10]. Post statistics processing start.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[10]. Post statistics processing end.
+[2026-10-11 16:21:02.184] [statistics] [info] sys[10], Wall time: 1509584
+[2026-10-11 16:21:02.184] [statistics] [info] sys[10], GPU time: 400000
+[2026-10-11 16:21:02.184] [statistics] [info] sys[10], Comm time: 1109584
+[2026-10-11 16:21:02.185] [workload] [info] CS4251 complete group=1 node=5 end_ns=2040574
+[2026-10-11 16:21:02.185] [workload] [info] sys[5] finished, 2120044 cycles, exposed communication 1720044 cycles.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[5]. Post statistics processing start.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[5]. Post statistics processing end.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[5], Wall time: 2120044
+[2026-10-11 16:21:02.185] [statistics] [info] sys[5], GPU time: 400000
+[2026-10-11 16:21:02.185] [statistics] [info] sys[5], Comm time: 1720044
+[2026-10-11 16:21:02.185] [workload] [info] sys[9] finished, 2120044 cycles, exposed communication 1720044 cycles.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[9]. Post statistics processing start.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[9]. Post statistics processing end.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[9], Wall time: 2120044
+[2026-10-11 16:21:02.185] [statistics] [info] sys[9], GPU time: 400000
+[2026-10-11 16:21:02.185] [statistics] [info] sys[9], Comm time: 1720044
+[2026-10-11 16:21:02.185] [workload] [info] sys[13] finished, 2120044 cycles, exposed communication 1720044 cycles.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[13]. Post statistics processing start.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[13]. Post statistics processing end.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[13], Wall time: 2120044
+[2026-10-11 16:21:02.185] [statistics] [info] sys[13], GPU time: 400000
+[2026-10-11 16:21:02.185] [statistics] [info] sys[13], Comm time: 1720044
+[2026-10-11 16:21:02.185] [workload] [info] sys[1] finished, 2120044 cycles, exposed communication 1720044 cycles.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[1]. Post statistics processing start.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[1]. Post statistics processing end.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[1], Wall time: 2120044
+[2026-10-11 16:21:02.185] [statistics] [info] sys[1], GPU time: 400000
+[2026-10-11 16:21:02.185] [statistics] [info] sys[1], Comm time: 1720044
+[2026-10-11 16:21:02.185] [workload] [info] sys[8] finished, 2140574 cycles, exposed communication 1740574 cycles.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[8]. Post statistics processing start.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[8]. Post statistics processing end.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[8], Wall time: 2140574
+[2026-10-11 16:21:02.185] [statistics] [info] sys[8], GPU time: 400000
+[2026-10-11 16:21:02.185] [statistics] [info] sys[8], Comm time: 1740574
+[2026-10-11 16:21:02.185] [workload] [info] sys[12] finished, 2140574 cycles, exposed communication 1740574 cycles.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[12]. Post statistics processing start.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[12]. Post statistics processing end.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[12], Wall time: 2140574
+[2026-10-11 16:21:02.185] [statistics] [info] sys[12], GPU time: 400000
+[2026-10-11 16:21:02.185] [statistics] [info] sys[12], Comm time: 1740574
+[2026-10-11 16:21:02.185] [workload] [info] sys[0] finished, 2140574 cycles, exposed communication 1740574 cycles.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[0]. Post statistics processing start.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[0]. Post statistics processing end.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[0], Wall time: 2140574
+[2026-10-11 16:21:02.185] [statistics] [info] sys[0], GPU time: 400000
+[2026-10-11 16:21:02.185] [statistics] [info] sys[0], Comm time: 1740574
+[2026-10-11 16:21:02.185] [workload] [info] sys[4] finished, 2140574 cycles, exposed communication 1740574 cycles.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[4]. Post statistics processing start.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[4]. Post statistics processing end.
+[2026-10-11 16:21:02.185] [statistics] [info] sys[4], Wall time: 2140574
+[2026-10-11 16:21:02.185] [statistics] [info] sys[4], GPU time: 400000
+[2026-10-11 16:21:02.185] [statistics] [info] sys[4], Comm time: 1740574
+[2026-10-11 16:21:02.186] [system] [warning] Exiting
