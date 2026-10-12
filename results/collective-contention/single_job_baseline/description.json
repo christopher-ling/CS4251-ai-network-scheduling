@@ -1,0 +1,16 @@
+{
+  "phase": "baseline",
+  "name": "single_job_baseline",
+  "job_count": 1,
+  "iterations": 3,
+  "active_group_ids": [
+    "1"
+  ],
+  "topology_npus": 64,
+  "gpus_per_job": 4,
+  "compute_phase_us": 100,
+  "message_bytes_per_rank": 16777216,
+  "job_arrival_ns": 0,
+  "placement": "strided",
+  "trace_pattern": "(compute -> AllReduce) repeated N times -> final compute"
+}
