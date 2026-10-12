@@ -14,5 +14,14 @@ This document maps the report's proposed work to concrete repository evidence.
 | Proposed congestion-aware scheduler | `src/scheduler/` | Planned |
 | Robustness evaluation | Second topology and workload mix | Planned |
 
+## Section 1 questions and evidence
+
+The four questions under methodology step 1 are answered together in the
+[training-trace tutorial](../guide/training-trace.md#answers-to-the-methodologys-section-1-questions).
+The recorded numerical evidence is the `training_iteration` row in
+[`results/collective-contention/per_job_summary.csv`](../results/collective-contention/per_job_summary.csv),
+and the implementation is `write_traces` in
+[`scripts/run_collective_contention.py`](../scripts/run_collective_contention.py).
+
 An activity becomes complete only when its implementation, configuration,
 command, raw output, summarized metrics, and simulator revision are recorded.

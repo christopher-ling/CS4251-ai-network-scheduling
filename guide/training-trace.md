@@ -67,6 +67,41 @@ results/onboarding/training-trace/per_job_summary.csv
 `per_job_summary.csv` contains JCT. The starting JCT should be about
 `2187.534` simulated microseconds.
 
+## Answers to the methodology's Section 1 questions
+
+### 1. How is computation represented?
+
+Computation is a Chakra `COMP_NODE`. The runner reads `compute_phase_us` from
+`experiment.json` and writes that value into the node's `duration_micros`
+field. Because `roofline-enabled` is `0` in `system_ring.json`, this experiment
+replays the configured compute duration rather than calculating it from a
+hardware performance model.
+
+### 2. When does the AllReduce begin?
+
+The AllReduce becomes ready only after the preceding compute node completes.
+`write_traces` adds the compute node's ID to the AllReduce node's `data_deps`.
+After that dependency is satisfied, ASTRA-sim's system layer decomposes the
+collective into network operations. Under contention, ready communication may
+still wait for the modeled network resources.
+
+### 3. What determines the communication size?
+
+`message_bytes_per_rank` in `experiment.json` determines it. The starting
+value, `16777216`, is 16 MiB. `write_traces` stores it as the collective node's
+`comm_size` attribute for every participating rank. This is the configured
+message size per rank, not a claim that the total bytes carried across all
+physical links equal 16 MiB.
+
+### 4. How long does one complete training iteration take?
+
+The recorded uncontended iteration time is `2087.534 us`: `100 us` of compute
+plus `1987.534 us` of modeled AllReduce communication and waiting. The complete
+demonstration trace finishes at `2187.534 us` because it includes another
+`100 us` compute node representing the beginning of the next iteration. These
+values appear as `mean_iteration_us`, `mean_allreduce_and_wait_us`, and `jct_us`
+in `per_job_summary.csv`.
+
 ## Change the workload
 
 Change `compute_phase_us` from `100` to `200`. There are two compute nodes, so
