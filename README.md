@@ -17,27 +17,48 @@ Follow [Installation and quickstart](labs/00-quickstart.md) to clone the pinned 
 With the environment configured, run inside Docker:
 
 ```sh
-# Single-collective bandwidth experiment
-bash /app/team/scripts/run_bandwidth_lab.sh /app/astra-sim
-
-# Synthetic training cycles and shared-link experiments
 cd /app/team
-python3 scripts/run_learning_experiments.py --astra /app/astra-sim
+python3 scripts/run_sections_1_to_3.py \
+  --astra /app/astra-sim \
+  --output results/sections-1-3
 ```
 
-The scripts capture inputs and logs and require completion of all 16 simulated endpoints. Outputs are written to the mounted team repository. Enabling admission-policy comparisons requires the optional patch documented in Experiment 3.
+This command reproduces methodology Sections 1-3: one compute/AllReduce iteration, a matched single-job baseline, and a 1/2/4/8/16-job contention sweep. It captures inputs and logs and requires completion of all 64 simulated endpoints. Outputs are written to the mounted team repository.
 
 ## Experiments
 
-| Experiment | Objective | Source changes required |
+| Tutorial section | Objective | Source changes required |
 |---|---|---|
-| [1. AllReduce bandwidth](labs/01-allreduce-bandwidth.md) | Measure collective timing at fixed workload with different link capacities | None; configuration only |
-| [2. Training cycles and contention](labs/02-training-and-contention.md) | Model compute dependencies and compare isolated versus concurrent jobs | None; generated traces and configurations |
-| [3. Collective admission](labs/03-admission-prototype.md) | Compare immediate admission, FIFO, and size-based priority with aging | Optional simulator patch |
+| [1. Training iteration](labs/sections-1-3/01-training-iteration.md) | Understand compute, AllReduce, dependencies, and traces | None; generated traces |
+| [2. Single-job baseline](labs/sections-1-3/02-single-job-baseline.md) | Measure the fixed workload without inter-job contention | None |
+| [3. Concurrent jobs](labs/sections-1-3/03-concurrent-jobs.md) | Hold inputs fixed while sweeping 1/2/4/8/16 active jobs | None |
+
+Start with the [Sections 1-3 tutorial index](labs/sections-1-3/README.md). The earlier [bandwidth sensitivity](labs/01-allreduce-bandwidth.md), [16-NPU contention study](labs/02-training-and-contention.md), and [admission prototype](labs/03-admission-prototype.md) remain supplementary experiments.
 
 See [Development workflow](docs/development-workflow.md) for the distinction between running experiments, editing configurations, generating traces, and modifying the scheduler.
 
 ## Reference results
+
+The controlled Sections 1-3 run uses a fixed 64-NPU Ring, four GPUs per job,
+three AllReduce iterations, 16 MiB per rank per collective, and 100-us compute
+phases. Only the number of active jobs changes in the contention sweep.
+
+| Concurrent jobs | Mean JCT | Mean slowdown vs. one job |
+|---:|---:|---:|
+| 1 | 6.362602 ms | 1.000x |
+| 2 | 6.391649 ms | 1.005x |
+| 4 | 6.449742 ms | 1.014x |
+| 8 | 11.730527 ms | 1.844x |
+| 16 | 22.901272 ms | 3.599x |
+
+The constructed placement shows little slowdown at two and four jobs, then a
+clear contention threshold at eight jobs. See the
+[recorded results](results/sections-1-3/README.md), per-job CSV, raw logs, and
+generated chart before drawing policy conclusions. The ordinary analytical
+output does not expose direct per-link utilization; the repository does not
+label elapsed communication-and-wait time as utilization.
+
+Earlier preliminary experiments used a different 16-NPU configuration:
 
 | Scenario | Simulated completion time |
 |---|---:|
@@ -61,24 +82,35 @@ In the heterogeneous admission experiment, size/aging reduces mean JCT by approx
 - Workload payload: the supplied `1MB` example encodes 1,048,576 bytes (1 MiB) per rank.
 - Evidence: configuration copies, logs, summaries, and recursive submodule records under `results/`.
 
-Fresh containers and experiment launchers were verified using the successfully built image. A second clean end-to-end image rebuild was not performed. The optional patch is stored separately and its diff is recorded with policy results.
+The Sections 1-3 suite was verified after a clean end-to-end analytical build
+at the pinned simulator commit. `results/sections-1-3/astra-sim-status.txt` is
+empty, confirming that the recorded run used no simulator source changes. The
+optional admission patch is stored separately and its diff is recorded with
+the older policy results.
+
+Run the lightweight layout and analysis checks from the team repository:
+
+```sh
+python3 -m unittest discover -s tests -p 'test_*.py'
+```
 
 ## Repository structure
 
 ```text
-configs/    Reference network, system, and memory configurations
-scripts/    Experiment launchers and synthetic trace generator
-labs/       Installation and reproducible experiment protocols
+configs/    Fixed and reference network, system, and workload parameters
+scripts/    Reusable experiment launchers, trace generation, and analysis
+labs/       Guided tutorials that call the shared implementations
 docs/       Architecture, terminology, workflow, and tool assessment
 patches/    Optional coordinated admission prototype
 results/    Recorded logs, summaries, input descriptions, and versions
+tests/      Lightweight checks for experiment layout and analysis helpers
 ```
 
 Generated binary traces are excluded from version control and recreated by the generator.
 
 ## Limitations and next work
 
-Current evaluation covers a bidirectional ring stress case and a nonblocking switch control. The pinned analytical backend models chunk queueing and supports one-dimensional topologies; packet loss, retransmissions, and real telemetry are outside these experiments. The admission prototype has a single global slot and limited trace assumptions.
+Current evaluation includes the fixed 64-NPU Ring concurrency sweep plus an earlier 16-NPU ring stress case and nonblocking-switch control. The pinned analytical backend models chunk queueing and supports one-dimensional topologies; packet loss, retransmissions, direct link-utilization telemetry, and real congestion feedback are outside these experiments. The admission prototype has a single global slot and limited trace assumptions.
 
 Next work is to select a network-state signal, establish a literature-grounded algorithm gap, expand workloads and bottleneck topologies, and evaluate timing and fairness against matched baselines. See [Tool assessment](docs/tool-assessment.md).
 

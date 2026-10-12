@@ -1,5 +1,15 @@
 # Experiment review checklist
 
+## Methodology Sections 1-3
+
+Start with the fixed 64-NPU experiment in `labs/sections-1-3/`. Explain the
+compute -> AllReduce dependency chain, identify the 6.362602-ms matched
+single-job baseline, and show that job count is the only intentional variable
+in the 1/2/4/8/16-job sweep. Mean slowdown remains near 1.0x through four jobs,
+then reaches 1.844x at eight jobs and 3.599x at sixteen jobs. Describe this as a
+constructed contention threshold, not scheduler improvement. The analytical
+completion output does not provide direct per-link utilization.
+
 ## Bandwidth experiment
 
 Identify the workload, ring collective algorithm, physical topology, payload, and time units. Show the single changed field: bandwidth. Verify all 16 ranks finish. Explain the 36.7% increase as capacity sensitivity rather than scheduler performance.
@@ -14,7 +24,7 @@ Distinguish immediate admission, FIFO, and size priority with aging. Explain gro
 
 ## Reproducibility
 
-Distinguish experiments personally reproduced by the presenter from repository reference results. Preserve versions, inputs, logs, and source changes. Review limitations before making real-system claims.
+Distinguish experiments personally reproduced by the presenter from repository reference results. Preserve versions, inputs, logs, and source changes. For Sections 1-3, confirm `astra-sim-status.txt` is empty and every raw log contains 64 unique completion messages. Review limitations before making real-system claims.
 
 ## Team decisions
 

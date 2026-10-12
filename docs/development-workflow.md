@@ -10,14 +10,21 @@
 | Create workload/dependencies | Python generator and Chakra traces | None | Regenerate traces |
 | Implement admission policy | `Workload.cc` and `Workload.hh` patch | Required | Required |
 
+The canonical implementation of methodology Sections 1-3 is
+`scripts/run_sections_1_to_3.py`. The files under `labs/sections-1-3/` explain
+that implementation; they are not separate copies. Fixed research inputs live
+under `configs/sections-1-3/`, and measured evidence lives under
+`results/sections-1-3/`.
+
 VS Code is an editor, not a simulator prerequisite. Tutorials can use it to inspect files, generate traces, or develop simulator behavior. Identify the activity before treating it as part of installation.
 
 ## Preparation for presenting
 
-1. Reproduce Experiment 1 and inspect the two network configurations.
-2. Reproduce Experiment 2 and inspect a generated workload description and summary.
-3. Review Experiment 3's mechanism and assumptions. The prototype is optional for the introductory demonstration.
-4. Distinguish personally reproduced results from previously recorded results.
+1. Reproduce tutorial Section 1 and explain the generated dependency chain.
+2. Reproduce Section 2 and identify the matched isolated-job JCT.
+3. Reproduce Section 3 and explain what stays fixed as concurrency increases.
+4. Review the optional admission prototype only after the baseline is clear.
+5. Distinguish personally reproduced results from previously recorded results.
 
 Do not repeat installation when the image and compiled pinned simulator already exist.
 

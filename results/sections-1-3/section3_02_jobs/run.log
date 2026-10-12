@@ -1,0 +1,341 @@
+[2026-10-12 02:13:32.180] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 64 index in ring: 0 offset: 1 total nodes in ring: 64
+[2026-10-12 02:13:32.180] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 64 index in ring: 0 offset: 1 total nodes in ring: 64
+[2026-10-12 02:13:32.180] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 64 index in ring: 0 offset: 1 total nodes in ring: 64
+[2026-10-12 02:13:32.180] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 64 index in ring: 0 offset: 1 total nodes in ring: 64
+[2026-10-12 02:13:32.210] [workload] [info] sys[2] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[2]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[2]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[2], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[2], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[3] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[3]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[3]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[3], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[3], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[4] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[4]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[4]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[4], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[4], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[5] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[5]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[5]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[5], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[5], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[6] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[6]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[6]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[6], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[6], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[7] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[7]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[7]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[7], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[7], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[8] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[8]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[8]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[8], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[8], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[9] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[9]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[9]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[9], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[9], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[10] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[10]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[10]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[10], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[10], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[11] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[11]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[11]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[11], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[11], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[12] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[12]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[12]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[12], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[12], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[13] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[13]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[13]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[13], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[13], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[14] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[14]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[14]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[14], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[14], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[15] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[15]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[15]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[15], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[15], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[18] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[18]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[18]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[18], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[18], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[19] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[19]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[19]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[19], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[19], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[20] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[20]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[20]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[20], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[20], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[21] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[21]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[21]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[21], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[21], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[22] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[22]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[22]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[22], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[22], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[23] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[23]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[23]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[23], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[23], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[24] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[24]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[24]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[24], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[24], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[25] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[25]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[25]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[25], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[25], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[26] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[26]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[26]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[26], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[26], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[27] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[27]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[27]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[27], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[27], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[28] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[28]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[28]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[28], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[28], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[29] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[29]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[29]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[29], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[29], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[30] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[30]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[30]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[30], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[30], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[31] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[31]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[31]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[31], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[31], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[34] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[34]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[34]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[34], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[34], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[35] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[35]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[35]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[35], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[35], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[36] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[36]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[36]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[36], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[36], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[37] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[37]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[37]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[37], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[37], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[38] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[38]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[38]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[38], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[38], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[39] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[39]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[39]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[39], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[39], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[40] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[40]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[40]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[40], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[40], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[41] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[41]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[41]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[41], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[41], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[42] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[42]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[42]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[42], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[42], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[43] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[43]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[43]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[43], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[43], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[44] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[44]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[44]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[44], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[44], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[45] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[45]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[45]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[45], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[45], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[46] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[46]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[46]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[46], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[46], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[47] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[47]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[47]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[47], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[47], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[50] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[50]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[50]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[50], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[50], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[51] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[51]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[51]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[51], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[51], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[52] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[52]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[52]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[52], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[52], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[53] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[53]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[53]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[53], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[53], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[54] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[54]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[54]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[54], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[54], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[55] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[55]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[55]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[55], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[55], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[56] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[56]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[56]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[56], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[56], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[57] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[57]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[57]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[57], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[57], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[58] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[58]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[58]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[58], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[58], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[59] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[59]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[59]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[59], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[59], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[60] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[60]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[60]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[60], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[60], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[61] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[61]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[61]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[61], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[61], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[62] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[62]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[62]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[62], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[62], GPU time: 1000
+[2026-10-12 02:13:32.210] [workload] [info] sys[63] finished, 1000 cycles, exposed communication 0 cycles.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[63]. Post statistics processing start.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[63]. Post statistics processing end.
+[2026-10-12 02:13:32.210] [statistics] [info] sys[63], Wall time: 1000
+[2026-10-12 02:13:32.210] [statistics] [info] sys[63], GPU time: 1000
+[2026-10-12 02:13:32.210] [system::topology::RingTopology] [info] custom ring, id: 0, dimension: local total nodes in ring: 4 index in ring: 0 total nodes in ring 4
+[2026-10-12 02:13:32.210] [system::topology::RingTopology] [info] custom ring, id: 1, dimension: local total nodes in ring: 4 index in ring: 0 total nodes in ring 4
+[2026-10-12 02:13:32.210] [system::topology::RingTopology] [info] custom ring, id: 16, dimension: local total nodes in ring: 4 index in ring: 1 total nodes in ring 4
+[2026-10-12 02:13:32.210] [system::topology::RingTopology] [info] custom ring, id: 17, dimension: local total nodes in ring: 4 index in ring: 1 total nodes in ring 4
+[2026-10-12 02:13:32.210] [system::topology::RingTopology] [info] custom ring, id: 32, dimension: local total nodes in ring: 4 index in ring: 2 total nodes in ring 4
+[2026-10-12 02:13:32.210] [system::topology::RingTopology] [info] custom ring, id: 33, dimension: local total nodes in ring: 4 index in ring: 2 total nodes in ring 4
+[2026-10-12 02:13:32.210] [system::topology::RingTopology] [info] custom ring, id: 48, dimension: local total nodes in ring: 4 index in ring: 3 total nodes in ring 4
+[2026-10-12 02:13:32.210] [system::topology::RingTopology] [info] custom ring, id: 49, dimension: local total nodes in ring: 4 index in ring: 3 total nodes in ring 4
+[2026-10-12 02:13:32.213] [workload] [info] sys[33] finished, 6362602 cycles, exposed communication 5962602 cycles.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[33]. Post statistics processing start.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[33]. Post statistics processing end.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[33], Wall time: 6362602
+[2026-10-12 02:13:32.213] [statistics] [info] sys[33], GPU time: 400000
+[2026-10-12 02:13:32.213] [statistics] [info] sys[33], Comm time: 5962602
+[2026-10-12 02:13:32.213] [workload] [info] sys[49] finished, 6362602 cycles, exposed communication 5962602 cycles.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[49]. Post statistics processing start.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[49]. Post statistics processing end.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[49], Wall time: 6362602
+[2026-10-12 02:13:32.213] [statistics] [info] sys[49], GPU time: 400000
+[2026-10-12 02:13:32.213] [statistics] [info] sys[49], Comm time: 5962602
+[2026-10-12 02:13:32.213] [workload] [info] sys[1] finished, 6362602 cycles, exposed communication 5962602 cycles.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[1]. Post statistics processing start.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[1]. Post statistics processing end.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[1], Wall time: 6362602
+[2026-10-12 02:13:32.213] [statistics] [info] sys[1], GPU time: 400000
+[2026-10-12 02:13:32.213] [statistics] [info] sys[1], Comm time: 5962602
+[2026-10-12 02:13:32.213] [workload] [info] sys[17] finished, 6362602 cycles, exposed communication 5962602 cycles.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[17]. Post statistics processing start.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[17]. Post statistics processing end.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[17], Wall time: 6362602
+[2026-10-12 02:13:32.213] [statistics] [info] sys[17], GPU time: 400000
+[2026-10-12 02:13:32.213] [statistics] [info] sys[17], Comm time: 5962602
+[2026-10-12 02:13:32.213] [workload] [info] sys[32] finished, 6420695 cycles, exposed communication 6020695 cycles.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[32]. Post statistics processing start.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[32]. Post statistics processing end.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[32], Wall time: 6420695
+[2026-10-12 02:13:32.213] [statistics] [info] sys[32], GPU time: 400000
+[2026-10-12 02:13:32.213] [statistics] [info] sys[32], Comm time: 6020695
+[2026-10-12 02:13:32.213] [workload] [info] sys[48] finished, 6420695 cycles, exposed communication 6020695 cycles.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[48]. Post statistics processing start.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[48]. Post statistics processing end.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[48], Wall time: 6420695
+[2026-10-12 02:13:32.213] [statistics] [info] sys[48], GPU time: 400000
+[2026-10-12 02:13:32.213] [statistics] [info] sys[48], Comm time: 6020695
+[2026-10-12 02:13:32.213] [workload] [info] sys[0] finished, 6420695 cycles, exposed communication 6020695 cycles.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[0]. Post statistics processing start.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[0]. Post statistics processing end.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[0], Wall time: 6420695
+[2026-10-12 02:13:32.213] [statistics] [info] sys[0], GPU time: 400000
+[2026-10-12 02:13:32.213] [statistics] [info] sys[0], Comm time: 6020695
+[2026-10-12 02:13:32.213] [workload] [info] sys[16] finished, 6420695 cycles, exposed communication 6020695 cycles.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[16]. Post statistics processing start.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[16]. Post statistics processing end.
+[2026-10-12 02:13:32.213] [statistics] [info] sys[16], Wall time: 6420695
+[2026-10-12 02:13:32.213] [statistics] [info] sys[16], GPU time: 400000
+[2026-10-12 02:13:32.213] [statistics] [info] sys[16], Comm time: 6020695
+[2026-10-12 02:13:32.219] [system] [warning] Exiting
