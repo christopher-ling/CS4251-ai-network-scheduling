@@ -5,6 +5,18 @@
 Learn how the project describes GPU compute and AllReduce, then change that
 description and observe the simulated completion time.
 
+The practical purpose is to verify that ASTRA-sim can represent the smallest
+training sequence required by this project:
+
+```text
+four GPUs compute -> the four GPUs run AllReduce -> the next compute starts
+```
+
+Completing this experiment gives the project a known working workload before
+multiple jobs and network contention are introduced. It also answers where
+compute time, communication size, operation order, and iteration time come
+from. You do not need to read the binary `.et` files individually.
+
 ## Read the inputs and code
 
 Open `guide/workspace/experiment.json` and find:
@@ -66,6 +78,41 @@ results/onboarding/training-trace/per_job_summary.csv
 `command.json` records the exact ASTRA-sim binary and input files used.
 `per_job_summary.csv` contains JCT. The starting JCT should be about
 `2187.534` simulated microseconds.
+
+### Why are there 64 `workload.*.et` files?
+
+The physical test topology contains 64 simulated endpoints, so ASTRA-sim
+requires one trace file for every endpoint. This one-job experiment activates
+four ranks: `[0, 16, 32, 48]`. Those four ranks perform the training sequence.
+The remaining endpoint traces contain a one-microsecond inactive operation.
+Keeping the physical 64-endpoint topology fixed makes the later 1-, 2-, 4-,
+8-, and 16-job results comparable.
+
+### How to read the result row
+
+The initial `training_iteration` row means:
+
+| CSV column | Starting value | Meaning |
+|---|---:|---|
+| `job_count` | 1 | One training job is active |
+| `job_id` | 1 | This row reports job 1 |
+| `gpus_per_job` | 4 | Four simulated GPU ranks participate |
+| `iterations` | 1 | One compute/AllReduce iteration is measured |
+| `message_bytes_per_rank` | 16777216 | Each rank's AllReduce message is 16 MiB |
+| `compute_total_us` | 200 | Two 100-us compute operations appear in the complete demo trace |
+| `completion_ns` | 2187534 | The job's final rank completes at this simulated nanosecond |
+| `jct_us` | 2187.534 | Complete demo-trace time in microseconds |
+| `communication_and_wait_us` | 1987.534 | JCT after subtracting configured compute time |
+| `mean_iteration_us` | 2087.534 | Compute plus AllReduce, excluding the final next-iteration compute |
+
+The empty `slowdown_vs_single_job` cell is expected. This run contains only
+the training-iteration demonstration; slowdown is calculated later using the
+matched baseline and concurrent-job cases.
+
+At this point you have shown that the trace dependency works, four ranks
+participate in one Ring AllReduce, and ASTRA-sim produces a simulated iteration
+time. The edits in the next section show which parts of that time come from
+workload choices rather than a hard-coded answer.
 
 ## Key Questions and Findings
 
