@@ -15,6 +15,11 @@ these functions in order:
 | `run_case` | Copy inputs, launch the ASTRA-sim binary, and collect completion times |
 | `add_slowdown_and_summarize` | Calculate slowdown, makespan, and fairness |
 
+The contention mechanism is distributed across `build_groups`,
+`build_scenarios`, `write_traces`, and `run_case`. See
+[How the experiment creates network contention](../docs/contention-model.md)
+for the complete path.
+
 ## Follow one AllReduce through the code
 
 Inside `write_traces`, find the call whose name contains `allreduce`. The node

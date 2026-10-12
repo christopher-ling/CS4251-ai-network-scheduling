@@ -1,9 +1,20 @@
 #!/usr/bin/env python3
-"""Run the controlled ASTRA-sim collective-contention experiment.
+"""Generate, run, and summarize the controlled ASTRA-sim experiments.
 
 Run this script inside the project Docker container. It generates Chakra
 execution traces, invokes the congestion-aware analytical backend, validates
 all simulated endpoints, and writes per-job and per-scenario summaries.
+
+Contention is created through the inputs rather than a special "contention"
+API. Multiple independent communicator groups receive identical
+compute/AllReduce traces and start at simulated time zero. Their strided rank
+placement makes their Ring AllReduces request shared physical Ring links. The
+analytical backend models the resulting chunk waiting; this script measures
+the resulting increase in job completion time.
+
+This runner does not implement the proposed scheduler. It establishes the
+native ready-to-run behavior and the contention evidence needed before policy
+comparisons are added.
 """
 
 from __future__ import annotations
@@ -12,7 +23,6 @@ import argparse
 import csv
 import json
 import math
-import os
 from pathlib import Path
 import re
 import shutil
@@ -26,6 +36,7 @@ FINISH_PATTERN = re.compile(r"sys\[(\d+)\] finished, (\d+) cycles")
 
 
 def parse_args() -> argparse.Namespace:
+    """Read simulator, input, scenario, and output paths from the command line."""
     parser = argparse.ArgumentParser(
         description="Run the fixed ASTRA-sim collective-contention experiment."
     )
@@ -49,7 +60,13 @@ def parse_args() -> argparse.Namespace:
 
 
 def build_groups(maximum_jobs: int, gpus_per_job: int, topology_npus: int) -> dict[str, list[int]]:
-    """Return disjoint, strided communicator groups with nonzero group IDs."""
+    """Return disjoint communicator groups whose logical Rings share links.
+
+    With 16 four-GPU jobs, job 1 receives [0, 16, 32, 48], job 2 receives
+    [1, 17, 33, 49], and so on. Each job is independent, but its Ring spans a
+    long portion of the physical 64-endpoint Ring. Activating several groups
+    therefore makes their collective traffic contend for physical links.
+    """
     if maximum_jobs * gpus_per_job != topology_npus:
         raise ValueError("maximum_jobs * gpus_per_job must equal topology_npus")
     groups = {
@@ -63,6 +80,7 @@ def build_groups(maximum_jobs: int, gpus_per_job: int, topology_npus: int) -> di
 
 
 def selected_scenarios(raw: str) -> set[str]:
+    """Validate and normalize the comma-separated scenario selection."""
     scenarios = {part.strip().lower() for part in raw.split(",") if part.strip()}
     allowed = {"iteration", "baseline", "contention"}
     if not scenarios or not scenarios.issubset(allowed):
@@ -73,6 +91,7 @@ def selected_scenarios(raw: str) -> set[str]:
 
 
 def build_scenarios(config: dict, requested: set[str]) -> list[dict]:
+    """Expand requested phases into concrete job-count simulation cases."""
     scenarios: list[dict] = []
     if "iteration" in requested:
         scenarios.append({
@@ -89,6 +108,8 @@ def build_scenarios(config: dict, requested: set[str]) -> list[dict]:
             "iterations": config["measurement_iterations"],
         })
     if "contention" in requested:
+        # The job-count sweep changes only concurrency. Workload, placement,
+        # topology, collective algorithm, and time-zero arrivals stay fixed.
         for job_count in config["job_counts"]:
             if job_count == 1:
                 continue
@@ -102,6 +123,7 @@ def build_scenarios(config: dict, requested: set[str]) -> list[dict]:
 
 
 def validate_fixed_inputs(config: dict, config_dir: Path) -> None:
+    """Reject mismatches between experiment metadata and simulator inputs."""
     network_name = config.get("network_configuration", "network_64npu_ring.yml")
     system_name = config.get("system_configuration", "system_ring.json")
     network_text = (config_dir / network_name).read_text()
@@ -125,6 +147,7 @@ def validate_fixed_inputs(config: dict, config_dir: Path) -> None:
 
 
 def nearest_rank_percentile(values: Iterable[float], percentile: float) -> float:
+    """Calculate a nearest-rank percentile for the small deterministic samples."""
     ordered = sorted(values)
     if not ordered:
         raise ValueError("cannot calculate a percentile of an empty sequence")
@@ -133,6 +156,7 @@ def nearest_rank_percentile(values: Iterable[float], percentile: float) -> float
 
 
 def jain_fairness(values: Iterable[float]) -> float:
+    """Calculate Jain's fairness index for nonnegative completion-rate values."""
     samples = list(values)
     if not samples or any(value < 0 for value in samples):
         raise ValueError("fairness requires one or more nonnegative values")
@@ -141,6 +165,7 @@ def jain_fairness(values: Iterable[float]) -> float:
 
 
 def load_chakra(astra: Path):
+    """Load protobuf node types and the encoder from the pinned ASTRA checkout."""
     sys.path.insert(0, str(astra))
     from extern.graph_frontend.chakra.schema.protobuf.et_def_pb2 import (  # type: ignore
         ALL_REDUCE,
@@ -174,6 +199,7 @@ def write_traces(
     message_bytes: int,
     chakra: dict,
 ) -> None:
+    """Write one binary Chakra execution trace for every physical endpoint."""
     rank_to_group = {
         rank: group_id for group_id, members in groups.items() for rank in members
     }
@@ -187,6 +213,7 @@ def write_traces(
             node_id = 0
 
             def emit(node_type: int, name: str, duration_us: int = 0, collective: bool = False) -> None:
+                """Append one node after the previously emitted node for this rank."""
                 nonlocal previous_id, node_id
                 node = chakra["Node"](
                     id=node_id,
@@ -195,9 +222,12 @@ def write_traces(
                     duration_micros=duration_us,
                 )
                 if previous_id is not None:
+                    # This dependency creates compute -> AllReduce -> compute.
                     node.data_deps.append(previous_id)
                 node.attr.append(chakra["AttributeProto"](name="is_cpu_op", bool_val=False))
                 if collective:
+                    # pg_name keeps each training job's AllReduce independent;
+                    # traffic from different groups can still share physical links.
                     node.attr.extend([
                         chakra["AttributeProto"](
                             name="comm_type", int64_val=chakra["ALL_REDUCE"]
@@ -214,6 +244,8 @@ def write_traces(
                 node_id += 1
 
             if group_id not in active:
+                # ASTRA-sim still needs a trace for every endpoint in the fixed
+                # topology. Inactive ranks perform only this tiny placeholder.
                 emit(chakra["COMP_NODE"], "inactive_endpoint", duration_us=1)
                 continue
 
@@ -291,8 +323,11 @@ def run_case(
     output_dir: Path,
     chakra: dict,
 ) -> list[dict]:
+    """Generate one case, invoke ASTRA-sim, and return one row per active job."""
     case_dir = output_dir / scenario["name"]
     case_dir.mkdir(parents=True, exist_ok=True)
+    # All selected jobs start with the same trace at time zero. Their compute
+    # phases align, so their AllReduces become ready at overlapping times.
     active_group_ids = [str(index) for index in range(1, scenario["job_count"] + 1)]
     write_traces(
         case_dir=case_dir,
@@ -350,6 +385,8 @@ def run_case(
         f"--network-configuration={case_dir}/network.yml",
         f"--logging-folder={case_dir}/logging",
     ]
+    # command.json makes the run reproducible and reveals the exact boundary
+    # between this Python orchestration and the compiled ASTRA-sim engine.
     (case_dir / "command.json").write_text(json.dumps(command, indent=2) + "\n")
     result = subprocess.run(
         command,
@@ -358,7 +395,6 @@ def run_case(
         stderr=subprocess.STDOUT,
         text=True,
         timeout=180,
-        env={**os.environ, "CS4251_POLICY": "immediate"},
     )
     (case_dir / "run.log").write_text(result.stdout)
     if result.returncode:
@@ -381,6 +417,7 @@ def run_case(
     compute_total_us = (scenario["iterations"] + 1) * config["compute_phase_us"]
     rows = []
     for group_id in active_group_ids:
+        # A synchronized job finishes when its slowest participating rank does.
         completion_ns = max(completion_by_rank[rank] for rank in groups[group_id])
         completion_us = completion_ns / 1000.0
         communication_and_wait_us = completion_us - compute_total_us
@@ -414,6 +451,7 @@ def run_case(
 
 
 def add_slowdown_and_summarize(rows: list[dict]) -> list[dict]:
+    """Compare every concurrent job with the matched isolated-job JCT."""
     baseline_rows = [row for row in rows if row["case"] == "single_job_baseline"]
     if not baseline_rows:
         for row in rows:
@@ -454,6 +492,7 @@ def add_slowdown_and_summarize(rows: list[dict]) -> list[dict]:
 
 
 def write_csv(path: Path, rows: list[dict]) -> None:
+    """Write dictionaries as a stable, header-first CSV file."""
     if not rows:
         return
     with path.open("w", newline="") as stream:
@@ -463,6 +502,7 @@ def write_csv(path: Path, rows: list[dict]) -> None:
 
 
 def write_svg(path: Path, summaries: list[dict]) -> None:
+    """Create a dependency-free chart of mean slowdown versus job count."""
     width, height = 820, 460
     left, top, plot_width, plot_height = 80, 45, 680, 330
     maximum = max(row["mean_slowdown"] for row in summaries)
@@ -506,6 +546,7 @@ def write_svg(path: Path, summaries: list[dict]) -> None:
 def write_results_markdown(
     path: Path, config: dict, summaries: list[dict], rows: list[dict]
 ) -> None:
+    """Write a human-readable summary beside the raw and tabular evidence."""
     iteration_row = next(
         (row for row in rows if row["case"] == "training_iteration"), None
     )
@@ -564,6 +605,7 @@ def write_results_markdown(
 
 
 def main() -> int:
+    """Validate provenance, run every selected case, and write all outputs."""
     args = parse_args()
     astra = args.astra.resolve()
     output_dir = args.output.resolve()

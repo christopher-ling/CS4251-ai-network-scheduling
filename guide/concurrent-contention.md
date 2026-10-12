@@ -20,6 +20,9 @@ strided ranks. Job 1 uses `[0, 16, 32, 48]`, job 2 uses `[1, 17, 33, 49]`, and
 so on. Their logical Ring AllReduces traverse shared portions of the physical
 Ring, creating contention when communication overlaps.
 
+For a complete diagram and code-to-configuration mapping, read
+[How the experiment creates network contention](../docs/contention-model.md).
+
 ## Run the sweep
 
 ```sh
