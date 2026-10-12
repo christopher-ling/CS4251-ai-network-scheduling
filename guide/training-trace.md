@@ -67,7 +67,7 @@ results/onboarding/training-trace/per_job_summary.csv
 `per_job_summary.csv` contains JCT. The starting JCT should be about
 `2187.534` simulated microseconds.
 
-## Answers to the methodology's Section 1 questions
+## Key Questions and Findings
 
 ### 1. How is computation represented?
 
