@@ -1,52 +1,69 @@
-# Concurrent-job contention
+# Create contention with several jobs
 
-## Objective
+## What this lesson teaches
 
-Keep the topology and workload fixed while increasing the number of active
-jobs.
+**Contention** occurs when communication from different jobs needs the same
+limited links at overlapping times. The workload, collective algorithm, and
+network stay fixed in this lesson. You change only the number of active jobs.
 
-```sh
-cd /app/team
-python3 scripts/run_collective_contention.py \
-  --astra /app/astra-sim \
-  --scenarios contention \
-  --output results/onboarding/contention
+## 1. Choose the job counts
+
+Open `guide/workspace/experiment.json` and find:
+
+```json
+"job_counts": [1, 2, 4, 8, 16]
 ```
 
-Selecting `contention` automatically runs the matched isolated baseline.
+Each job receives four simulated GPUs. All jobs arrive at time zero and issue
+the same three AllReduces. Their rank placement makes different logical jobs
+traverse shared portions of the 64-NPU physical ring.
 
-Inspect:
+Temporarily shorten the sweep to:
 
-```sh
-cat results/onboarding/contention/contention_summary.csv
-cat results/onboarding/contention/per_job_summary.csv
+```json
+"job_counts": [1, 2, 4]
 ```
 
-Open `results/onboarding/contention/contention-slowdown.svg` in a browser or VS
-Code.
+## 2. Run and inspect the smaller experiment
 
-Every job retains four GPUs, three iterations, 100-us compute phases, 16-MiB
-AllReduce messages, and a time-zero arrival. Only active job count changes.
+Use **Tasks: Run Task > Tutorial: Run contention sweep**. Open:
 
-Expected reference behavior:
+```text
+results/onboarding/contention/contention_summary.csv
+results/onboarding/contention/contention-slowdown.svg
+```
 
-| Jobs | Mean JCT | Mean slowdown |
-|---:|---:|---:|
-| 1 | 6.363 ms | 1.000x |
-| 2 | 6.392 ms | 1.005x |
-| 4 | 6.450 ms | 1.014x |
-| 8 | 11.731 ms | 1.844x |
-| 16 | 22.901 ms | 3.599x |
+VS Code previews the SVG chart. In the CSV:
 
-This demonstrates contention in the constructed analytical Ring. It does not
-demonstrate that a scheduler improves performance. The next research task is
-packet-level backend qualification followed by matched policy baselines.
+- `mean_jct_us` is mean job completion time;
+- `mean_slowdown` divides contended JCT by the one-job baseline;
+- `makespan_us` is when the final active job finishes.
 
-## What requires code changes?
+The runner includes the one-job baseline automatically so slowdown always has
+a matching denominator.
 
-- Changing experiment values edits JSON, YAML, or the trace generator.
-- Adding a collective admission policy changes ASTRA-sim scheduling behavior.
-- HPCC and MLTCP evaluation requires the ns-3 transport implementation and its
-  packet-level signals.
+## 3. Increase contention
 
-The current onboarding experiments do not modify upstream ASTRA-sim source.
+Restore the full list:
+
+```json
+"job_counts": [1, 2, 4, 8, 16]
+```
+
+Predict where slowdown will become noticeable, then run the task again. The
+checked-in reference results show little change through four jobs, about
+`1.844x` mean slowdown at eight jobs, and about `3.599x` at sixteen jobs.
+
+Open one generated `trace_preview.json` under
+`results/onboarding/contention/concurrent_16_jobs/`. It shows sixteen jobs,
+each with its own four-rank communicator group and the same operation chain.
+
+## 4. State the conclusion carefully
+
+This experiment demonstrates that the constructed analytical ring produces
+shared-resource contention as job concurrency increases. It does not yet show
+that a new network scheduler improves performance. The next research stage is
+to compare explicit admission policies and qualify the packet-level ns-3
+backend for queue, utilization, HPCC, and possible MLTCP measurements.
+
+Continue to [Connect the files to the Python runner](how-the-code-works.md).

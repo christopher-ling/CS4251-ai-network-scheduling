@@ -1,0 +1,13 @@
+services:
+  astra:
+    image: astra-sim:latest
+    build:
+      context: ../astra-sim
+      dockerfile: Dockerfile
+    working_dir: /app/team
+    command: sleep infinity
+    tty: true
+    shm_size: 8gb
+    volumes:
+      - ../astra-sim:/app/astra-sim
+      - .:/app/team

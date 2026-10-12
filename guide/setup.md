@@ -1,55 +1,65 @@
-# Environment setup
+# Set up the VS Code workspace
 
-## Prerequisites
+## Goal
 
-- Docker Desktop is running.
-- Git is installed.
-- The ASTRA-sim and team repositories are sibling directories.
+At the end of this page, VS Code will show two folders in one window:
 
-From their parent directory:
+```text
+Team project and tutorial                 <- files you will edit
+ASTRA-sim engine (read after tutorial)    <- upstream simulator source
+```
+
+They are separate Git repositories because the first belongs to the class
+team, while the second belongs to the ASTRA-sim maintainers. They are siblings
+so Docker can mount both without copying one project into the other.
+
+## One-time preparation
+
+Docker Desktop must be open. In a terminal, create one parent folder and clone
+the two repositories into it:
 
 ```sh
+mkdir -p ~/Desktop/School/astra-project
+cd ~/Desktop/School/astra-project
 git clone https://github.com/astra-sim/astra-sim.git
-git clone https://github.com/christopher-ling/CS4251-ai-network-scheduling.git
-
+git clone --branch tutorial/astra-sim https://github.com/christopher-ling/CS4251-ai-network-scheduling.git
 cd astra-sim
 git checkout 4ce9ecfe746a3ee5fe47559a11d91644d641fa7f
 git submodule update --init --recursive
-docker build -t astra-sim:latest -f Dockerfile .
-cd ..
 ```
 
-Check out this branch in the team repository:
+The long value is a Git commit ID. It makes every teammate use the exact
+ASTRA-sim version that produced the project's reference results. Seeing
+`detached HEAD` after checkout is expected because this dependency is pinned.
 
-```sh
-cd CS4251-ai-network-scheduling
-git switch tutorial/astra-sim
-cd ..
+## Open the supplied workspace
+
+In VS Code, choose **File > Open Workspace from File...**, then open:
+
+```text
+CS4251-ai-network-scheduling/astra-sim-tutorial.code-workspace
 ```
 
-Start the container from the parent directory:
+In the Explorer, expand **Team project and tutorial**, then open these three
+files side by side:
 
-```sh
-docker run --rm -it --name astra-sim-onboarding --shm-size=8g \
-  -v "$PWD/astra-sim:/app/astra-sim" \
-  -v "$PWD/CS4251-ai-network-scheduling:/app/team" \
-  astra-sim:latest bash
-```
+- `guide/workspace/experiment.json`
+- `guide/workspace/system_ring.json`
+- `guide/workspace/network_64npu_ring.yml`
 
-Inside Docker, compile the analytical backend if the binary does not already
-exist:
+Read the field names only. You do not need to understand every value yet.
 
-```sh
-cd /app/astra-sim
-./build/astra_analytical/build.sh
-```
+## Build with VS Code tasks
 
-Verify the project runner:
+Open the Command Palette with **Cmd+Shift+P**, select **Tasks: Run Task**, and
+run these tasks in order:
 
-```sh
-cd /app/team
-python3 scripts/run_collective_contention.py --help
-```
+1. **Setup 1: Build and start Docker**
+2. **Setup 2: Compile ASTRA-sim analytical backend**
 
-Continue to [Compute and AllReduce trace](training-trace.md).
+These tasks show their output in VS Code's integrated terminal. The first can
+take several minutes on a new computer. The second creates the analytical
+simulator binary used by all three lessons.
 
+If both tasks finish without an error, continue to
+[Build and change one training trace](training-trace.md).

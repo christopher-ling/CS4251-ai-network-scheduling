@@ -1,0 +1,19 @@
+{
+  "folders": [
+    {
+      "name": "Team project and tutorial",
+      "path": "."
+    },
+    {
+      "name": "ASTRA-sim engine (read after the tutorial)",
+      "path": "../astra-sim"
+    }
+  ],
+  "settings": {
+    "files.associations": {
+      "*.yml": "yaml",
+      "*.et": "plaintext"
+    },
+    "explorer.compactFolders": false
+  }
+}

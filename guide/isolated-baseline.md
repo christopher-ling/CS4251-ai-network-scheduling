@@ -1,32 +1,59 @@
-# Isolated-job baseline
+# Measure one job and change the network
 
-## Objective
+## What this lesson teaches
 
-Measure the fixed workload without another job competing for network links.
+An **isolated baseline** measures one job without competing jobs. Later, each
+job's slowdown is calculated by dividing its contended completion time by this
+baseline. You will also change link capacity and observe the effect without
+changing the workload.
 
-```sh
-cd /app/team
-python3 scripts/run_collective_contention.py \
-  --astra /app/astra-sim \
-  --scenarios baseline \
-  --output results/onboarding/baseline
+## 1. See the difference between workload, system, and network
+
+Open these files side by side in VS Code:
+
+| File | Setting to find | Meaning |
+|---|---|---|
+| `guide/workspace/experiment.json` | `measurement_iterations: 3` | Repeat compute and AllReduce three times |
+| `guide/workspace/system_ring.json` | `all-reduce-implementation: ["ring"]` | Use the ring procedure for the exchange |
+| `guide/workspace/network_64npu_ring.yml` | `bandwidth: [ 50.0 ]` | Each physical ring link carries 50 GB/s |
+
+The **collective algorithm** and **network topology** are different. The ring
+algorithm describes how ranks exchange pieces of data. The physical ring
+describes which links are available to carry those exchanges.
+
+## 2. Run the isolated baseline
+
+Use **Tasks: Run Task > Tutorial: Run isolated baseline**. Open:
+
+```text
+results/onboarding/isolated-baseline/per_job_summary.csv
 ```
 
-Inspect:
+The starting JCT should be about `6362.602` us. The job performs three
+AllReduces and four compute phases. `communication_and_wait_us` is JCT minus
+configured compute time; it is not measured link utilization.
 
-```sh
-cat results/onboarding/baseline/per_job_summary.csv
-cat results/onboarding/baseline/single_job_baseline/network.yml
-cat results/onboarding/baseline/single_job_baseline/system.json
+## 3. Reduce the network capacity
+
+In `guide/workspace/network_64npu_ring.yml`, change:
+
+```yaml
+bandwidth: [ 25.0 ]  # GB/s
 ```
 
-The workload has four GPU ranks and three compute/AllReduce iterations followed
-by final compute. Its JCT becomes the denominator for slowdown in the
-concurrent-job experiment.
+Also change the matching description in `guide/workspace/experiment.json`:
 
-The reference JCT is approximately `6362.602 us`. The
-`communication_and_wait_us` column subtracts configured compute from JCT. It is
-not direct physical-link utilization.
+```json
+"bandwidth_GBps": 25.0
+```
 
-Continue to [Concurrent-job contention](concurrent-contention.md).
+The runner requires these two values to match so an experiment cannot be
+reported with the wrong label. Predict the result: the compute work stays the
+same, but communication over a half-capacity network should take longer.
 
+Run **Tutorial: Run isolated baseline** again and compare `jct_us`. This is a
+controlled experiment because bandwidth is the only modeled variable you
+changed.
+
+Discard both edits in VS Code Source Control before continuing to
+[Create contention with several jobs](concurrent-contention.md).

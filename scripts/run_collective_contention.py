@@ -233,6 +233,53 @@ def write_traces(
             )
 
 
+def build_trace_preview(
+    groups: dict[str, list[int]],
+    active_group_ids: list[str],
+    iterations: int,
+    compute_us: int,
+    message_bytes: int,
+) -> dict:
+    """Return a readable description of the binary traces made for a case."""
+    jobs = []
+    for group_id in active_group_ids:
+        operations = []
+        for iteration in range(iterations):
+            operations.extend([
+                {
+                    "order": len(operations) + 1,
+                    "operation": "compute",
+                    "duration_us": compute_us,
+                    "starts_after": "previous operation finishes",
+                },
+                {
+                    "order": len(operations) + 2,
+                    "operation": "AllReduce",
+                    "message_bytes_per_rank": message_bytes,
+                    "collective_algorithm": "ring",
+                    "starts_after": "previous operation finishes",
+                },
+            ])
+        operations.append({
+            "order": len(operations) + 1,
+            "operation": "final compute",
+            "duration_us": compute_us,
+            "starts_after": "previous operation finishes",
+        })
+        jobs.append({
+            "job_id": int(group_id),
+            "simulated_gpu_ranks": groups[group_id],
+            "operations_on_each_rank": operations,
+        })
+    return {
+        "what_this_file_is": (
+            "A human-readable preview of the binary Chakra .et traces. "
+            "ASTRA-sim reads the .et files, not this preview."
+        ),
+        "jobs": jobs,
+    }
+
+
 def run_case(
     scenario: dict,
     config: dict,
@@ -269,6 +316,18 @@ def run_case(
         "trace_pattern": "(compute -> AllReduce) repeated N times -> final compute",
     }
     (case_dir / "description.json").write_text(json.dumps(description, indent=2) + "\n")
+    (case_dir / "trace_preview.json").write_text(
+        json.dumps(
+            build_trace_preview(
+                groups,
+                active_group_ids,
+                scenario["iterations"],
+                config["compute_phase_us"],
+                config["message_bytes_per_rank"],
+            ),
+            indent=2,
+        ) + "\n"
+    )
     shutil.copy2(config_dir / "network_64npu_ring.yml", case_dir / "network.yml")
     shutil.copy2(config_dir / "system_ring.json", case_dir / "system.json")
 
@@ -443,7 +502,9 @@ def write_svg(path: Path, summaries: list[dict]) -> None:
 def write_results_markdown(
     path: Path, config: dict, summaries: list[dict], rows: list[dict]
 ) -> None:
-    iteration_row = next(row for row in rows if row["case"] == "training_iteration")
+    iteration_row = next(
+        (row for row in rows if row["case"] == "training_iteration"), None
+    )
     baseline_row = next(row for row in rows if row["case"] == "single_job_baseline")
     lines = [
         "# Collective-contention baseline results",
@@ -453,19 +514,25 @@ def write_results_markdown(
         "",
         "## Training iteration and isolated baseline",
         "",
-        f"The one-iteration trace completed in {iteration_row['jct_us']:.3f} us: "
-        f"{iteration_row['compute_total_us']} us of configured compute replay plus "
-        f"{iteration_row['communication_and_wait_us']:.3f} us in AllReduce.",
-        f"The three-iteration single-job baseline completed in "
-        f"{baseline_row['jct_us']:.3f} us. Its measured timing equals 400 us of "
-        f"configured compute replay plus three {iteration_row['communication_and_wait_us']:.3f}-us "
-        "AllReduce phases in this uncontended scenario.",
+    ]
+    if iteration_row is not None:
+        lines.append(
+            f"The one-iteration trace completed in {iteration_row['jct_us']:.3f} us: "
+            f"{iteration_row['compute_total_us']} us of configured compute replay plus "
+            f"{iteration_row['communication_and_wait_us']:.3f} us in AllReduce."
+        )
+    lines.extend([
+        f"The {baseline_row['iterations']}-iteration single-job baseline completed in "
+        f"{baseline_row['jct_us']:.3f} us. Its measured timing equals "
+        f"{baseline_row['compute_total_us']} us of "
+        f"configured compute replay plus {baseline_row['iterations']} AllReduce phases "
+        "in this uncontended scenario.",
         "",
         "## Concurrent-job contention sweep",
         "",
         "| Concurrent jobs | Mean JCT (us) | P95 JCT (us) | Mean slowdown | Max slowdown | Jain fairness |",
         "|---:|---:|---:|---:|---:|---:|",
-    ]
+    ])
     for row in summaries:
         lines.append(
             f"| {row['job_count']} | {row['mean_jct_us']:.3f} | "
