@@ -1,166 +1,97 @@
-# Create and change a training trace
+# Run a four-GPU training iteration
 
-## Goal
+## What you are proving
 
-Learn how the project describes GPU compute and AllReduce, then change that
-description and observe the simulated completion time.
-
-The practical purpose is to verify that ASTRA-sim can represent the smallest
-training sequence required by this project:
+This experiment verifies the smallest training sequence needed by the project:
 
 ```text
-four GPUs compute -> the four GPUs run AllReduce -> the next compute starts
+four GPUs compute -> all four run AllReduce -> the next compute begins
 ```
 
-Completing this experiment gives the project a known working workload before
-multiple jobs and network contention are introduced. It also answers where
-compute time, communication size, operation order, and iteration time come
-from. You do not need to read the binary `.et` files individually.
+The example has exactly four endpoints, so it produces four workload traces.
+Every endpoint participates in the same job.
 
-## Read the inputs and code
+## Read the workload description
 
-Open `guide/workspace/experiment.json` and find:
+Open `examples/training-iteration/experiment.json` and find:
 
 ```json
+"topology_npus": 4,
+"gpus_per_job": 4,
 "compute_phase_us": 100,
 "iteration_demo_count": 1,
-"message_bytes_per_rank": 16777216
+"message_bytes_per_rank": 1048576
 ```
 
-This describes one iteration with 100 microseconds of compute, one 16-MiB
-AllReduce per rank, and a final 100-microsecond compute operation:
+The message is 1 MiB per rank. The generated operation order is:
 
 ```text
-compute -> AllReduce -> final compute
+compute 100 us -> AllReduce 1 MiB/rank -> final compute 100 us
 ```
 
-Open `scripts/run_collective_contention.py` and find `write_traces`. This
-function creates each compute and collective node. The `data_deps` field makes
-each operation wait for the preceding node. For an AllReduce node, the code
-sets:
-
-```text
-comm_type = ALL_REDUCE
-comm_size = message_bytes_per_rank
-pg_name   = this job's communicator-group ID
-```
-
-The code writes one binary Chakra `.et` trace per simulated rank.
-
-## Run the one-iteration simulation
+## Run it
 
 From the team repository, run:
 
 ```sh
 docker compose exec astra python3 scripts/run_collective_contention.py \
   --astra /app/astra-sim \
-  --config guide/workspace \
+  --config examples/training-iteration \
   --scenarios iteration \
-  --output results/onboarding/training-trace
+  --output results/learning/training-iteration
 ```
 
-The options mean:
-
-- `--astra` tells the runner where the simulator is mounted;
-- `--config` selects the editable tutorial inputs;
-- `--scenarios iteration` requests the one-iteration demonstration;
-- `--output` selects the generated-results directory.
-
-Open these generated files:
+The project runner generates the Chakra traces and then launches the compiled
+`AstraSim_Analytical_Congestion_Aware` executable. Open:
 
 ```text
-results/onboarding/training-trace/training_iteration/trace_preview.json
-results/onboarding/training-trace/training_iteration/command.json
-results/onboarding/training-trace/per_job_summary.csv
+results/learning/training-iteration/training_iteration/trace_preview.json
+results/learning/training-iteration/training_iteration/command.json
+results/learning/training-iteration/per_job_summary.csv
 ```
 
-`trace_preview.json` is the readable version of the binary trace.
-`command.json` records the exact ASTRA-sim binary and input files used.
-`per_job_summary.csv` contains JCT. The starting JCT should be about
-`2187.534` simulated microseconds.
+Use the files in this order:
 
-### Why are there 64 `workload.*.et` files?
+1. `trace_preview.json` shows the operation order for each of the four ranks.
+2. `command.json` shows every file passed to the ASTRA-sim executable.
+3. `per_job_summary.csv` shows the resulting simulated time.
 
-The physical test topology contains 64 simulated endpoints, so ASTRA-sim
-requires one trace file for every endpoint. This one-job experiment activates
-four ranks: `[0, 16, 32, 48]`. Those four ranks perform the training sequence.
-The remaining endpoint traces contain a one-microsecond inactive operation.
-Keeping the physical 64-endpoint topology fixed makes the later 1-, 2-, 4-,
-8-, and 16-job results comparable.
+The `.et` files are binary protobuf traces consumed by ASTRA-sim. The preview
+exists so you can understand their contents without decoding binary data.
 
-### How to read the result row
+With the starting inputs, the reference row reports:
 
-The initial `training_iteration` row means:
-
-| CSV column | Starting value | Meaning |
-|---|---:|---|
-| `job_count` | 1 | One training job is active |
-| `job_id` | 1 | This row reports job 1 |
-| `gpus_per_job` | 4 | Four simulated GPU ranks participate |
-| `iterations` | 1 | One compute/AllReduce iteration is measured |
-| `message_bytes_per_rank` | 16777216 | Each rank's AllReduce message is 16 MiB |
-| `compute_total_us` | 200 | Two 100-us compute operations appear in the complete demo trace |
-| `completion_ns` | 2187534 | The job's final rank completes at this simulated nanosecond |
-| `jct_us` | 2187.534 | Complete demo-trace time in microseconds |
-| `communication_and_wait_us` | 1987.534 | JCT after subtracting configured compute time |
-| `mean_iteration_us` | 2087.534 | Compute plus AllReduce, excluding the final next-iteration compute |
-
-The empty `slowdown_vs_single_job` cell is expected. This run contains only
-the training-iteration demonstration; slowdown is calculated later using the
-matched baseline and concurrent-job cases.
-
-At this point you have shown that the trace dependency works, four ranks
-participate in one Ring AllReduce, and ASTRA-sim produces a simulated iteration
-time. The edits in the next section show which parts of that time come from
-workload choices rather than a hard-coded answer.
+| Measurement | Value |
+|---|---:|
+| Configured compute in the complete trace | 200 us |
+| AllReduce communication and waiting | 29.8 us |
+| Compute-plus-AllReduce iteration | 129.8 us |
+| Complete trace including final compute | 229.8 us |
 
 ## Key Questions and Findings
 
-### 1. How is computation represented?
+### How is computation represented?
 
-Computation is a Chakra `COMP_NODE`. The runner reads `compute_phase_us` from
-`experiment.json` and writes that value into the node's `duration_micros`
-field. Because `roofline-enabled` is `0` in `system_ring.json`, this experiment
-replays the configured compute duration rather than calculating it from a
-hardware performance model.
+The runner creates a Chakra `COMP_NODE`. `compute_phase_us` becomes the node's
+`duration_micros`. With `roofline-enabled` set to `0`, the configured duration
+is replayed directly.
 
-### 2. When does the AllReduce begin?
+### When does AllReduce begin?
 
-The AllReduce becomes ready only after the preceding compute node completes.
-`write_traces` adds the compute node's ID to the AllReduce node's `data_deps`.
-After that dependency is satisfied, ASTRA-sim's system layer decomposes the
-collective into network operations. Under contention, ready communication may
-still wait for the modeled network resources.
+The AllReduce node lists the preceding compute node in `data_deps`. It becomes
+ready when that compute node completes. ASTRA-sim then uses the system and
+network layers to simulate the collective.
 
-### 3. What determines the communication size?
+### What determines communication size?
 
-`message_bytes_per_rank` in `experiment.json` determines it. The starting
-value, `16777216`, is 16 MiB. `write_traces` stores it as the collective node's
-`comm_size` attribute for every participating rank. This is the configured
-message size per rank, not a claim that the total bytes carried across all
-physical links equal 16 MiB.
+`message_bytes_per_rank` becomes the AllReduce node's `comm_size`. The starting
+example uses 1,048,576 bytes, or 1 MiB, for each participating rank.
 
-### 4. How long does one complete training iteration take?
+### How long does one iteration take?
 
-The recorded uncontended iteration time is `2087.534 us`: `100 us` of compute
-plus `1987.534 us` of modeled AllReduce communication and waiting. The complete
-demonstration trace finishes at `2187.534 us` because it includes another
-`100 us` compute node representing the beginning of the next iteration. These
-values appear as `mean_iteration_us`, `mean_allreduce_and_wait_us`, and `jct_us`
-in `per_job_summary.csv`.
+The starting `mean_iteration_us` is `129.8 us`: 100 us of compute plus 29.8 us
+of modeled AllReduce communication and waiting. `jct_us` is `229.8 us` because
+the complete demonstration also contains the 100-us final compute node that
+represents the beginning of the next iteration.
 
-## Change the workload
-
-Change `compute_phase_us` from `100` to `200`. There are two compute nodes, so
-predict how much JCT should increase. Run the same command and inspect the CSV.
-
-Then change `message_bytes_per_rank` from `16777216` to `8388608` (8 MiB).
-Predict whether AllReduce becomes faster or slower, rerun, and compare JCT.
-
-Restore the practice input when finished:
-
-```sh
-git restore guide/workspace/experiment.json
-```
-
-Continue to [Run one job and change the network](isolated-baseline.md).
+Continue to [Controlled changes](controlled-changes.md).

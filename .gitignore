@@ -5,3 +5,5 @@ log/
 results/**/logging/
 results/**/logging_*/
 results/onboarding/
+results/learning/
+results/tutorial/

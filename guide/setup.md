@@ -63,4 +63,4 @@ docker compose exec astra \
   python3 scripts/run_collective_contention.py --help
 ```
 
-Continue to [Create and change a training trace](training-trace.md).
+Continue to [ASTRA-sim fundamentals](fundamentals.md).

@@ -1,69 +1,44 @@
-# Run one job and change the network
+# Measure the isolated-job baseline
 
-## Goal
+## Why a baseline is needed
 
-Measure a single job without competing traffic, identify the collective and
-network configurations, and test how link capacity affects completion time.
+The baseline measures one job without another job competing for links. Later,
+each contended job's completion time is divided by this value to calculate
+slowdown.
 
-## Follow the three simulation layers
+The same four-GPU example now runs three compute/AllReduce iterations followed
+by final compute. Open `examples/training-iteration/experiment.json` and find
+`measurement_iterations: 3`.
 
-Open these files together:
-
-| Layer | File | Important value |
-|---|---|---|
-| Workload | `guide/workspace/experiment.json` | `measurement_iterations: 3` |
-| System/collective | `guide/workspace/system_ring.json` | `all-reduce-implementation: ["ring"]` |
-| Network | `guide/workspace/network_64npu_ring.yml` | `bandwidth: [50.0]` GB/s |
-
-The ring **collective algorithm** describes the order in which ranks exchange
-data. The physical ring **network topology** describes the available links.
-They are separate layers even though both use the word “ring” here.
-
-In `run_case` inside `scripts/run_collective_contention.py`, find the `command`
-list. It passes the generated workload, communicator groups, system JSON,
-remote-memory JSON, and network YAML to the analytical ASTRA-sim executable.
-
-## Run the isolated baseline
+## Run the baseline
 
 ```sh
 docker compose exec astra python3 scripts/run_collective_contention.py \
   --astra /app/astra-sim \
-  --config guide/workspace \
+  --config examples/training-iteration \
   --scenarios baseline \
-  --output results/onboarding/isolated-baseline
+  --output results/learning/isolated-baseline
 ```
 
-Open `results/onboarding/isolated-baseline/per_job_summary.csv`. The initial
-JCT should be about `6362.602` microseconds. The job contains three AllReduces
-and four compute phases.
+Open:
 
-Also open the generated case directory. The runner copies `network.yml` and
-`system.json` into it so a result remains connected to the exact inputs used.
-
-## Change network capacity
-
-In `guide/workspace/network_64npu_ring.yml`, change:
-
-```yaml
-bandwidth: [ 25.0 ]  # GB/s
+```text
+results/learning/isolated-baseline/per_job_summary.csv
+results/learning/isolated-baseline/single_job_baseline/description.json
+results/learning/isolated-baseline/single_job_baseline/network.yml
+results/learning/isolated-baseline/single_job_baseline/system.json
 ```
 
-Change the matching metadata in `guide/workspace/experiment.json`:
+Verify that the row reports one job, four GPUs, three iterations, and a 1-MiB
+message. `compute_total_us` should be 400 because three iterations plus final
+compute create four 100-us compute operations.
 
-```json
-"bandwidth_GBps": 25.0
-```
+The verified starting baseline is `489.4 us`: 400 us of configured compute and
+89.4 us across three AllReduce phases, or 29.8 us per AllReduce in this
+uncontended analytical example.
 
-The validation code requires these values to match, preventing a result from
-being labeled with the wrong capacity. The compute work is unchanged, so
-predict what halving bandwidth does to JCT. Rerun the baseline command and
-compare the CSV.
+The copied JSON and YAML files preserve the exact inputs used for this result.
+`communication_and_wait_us` is JCT minus configured compute time. It is not
+measured physical-link utilization.
 
-Restore both files:
-
-```sh
-git restore guide/workspace/experiment.json \
-  guide/workspace/network_64npu_ring.yml
-```
-
-Continue to [Run several jobs and create contention](concurrent-contention.md).
+Continue to [Scale to the multi-job contention experiment](concurrent-contention.md).

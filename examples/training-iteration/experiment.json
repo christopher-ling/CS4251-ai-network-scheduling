@@ -1,0 +1,16 @@
+{
+  "topology_npus": 4,
+  "maximum_jobs": 1,
+  "gpus_per_job": 4,
+  "job_counts": [1],
+  "compute_phase_us": 100,
+  "iteration_demo_count": 1,
+  "measurement_iterations": 3,
+  "message_bytes_per_rank": 1048576,
+  "bandwidth_GBps": 50.0,
+  "latency_ns": 500.0,
+  "placement": "all four endpoints",
+  "all_jobs_arrive_at_ns": 0,
+  "network_configuration": "network.yml",
+  "system_configuration": "system.json"
+}

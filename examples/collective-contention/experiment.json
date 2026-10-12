@@ -10,5 +10,7 @@
   "bandwidth_GBps": 50.0,
   "latency_ns": 500.0,
   "placement": "strided",
-  "all_jobs_arrive_at_ns": 0
+  "all_jobs_arrive_at_ns": 0,
+  "network_configuration": "network.yml",
+  "system_configuration": "system.json"
 }

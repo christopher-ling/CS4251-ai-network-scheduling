@@ -28,8 +28,8 @@ The preceding compute node's ID is placed in `data_deps`, which prevents
 AllReduce from becoming ready before compute finishes. ASTRA-sim then reads:
 
 1. the generated workload trace;
-2. `system_ring.json` for the ring collective algorithm;
-3. `network_64npu_ring.yml` for network capacity and delay;
+2. the selected `system.json` for the ring collective algorithm;
+3. the selected `network.yml` for network capacity and delay;
 4. `groups.json` for the ranks participating in each job.
 
 It writes a completion time for every rank. `run_case` takes the latest rank
@@ -52,7 +52,7 @@ add/change packet transport       -> edit the ns-3 backend
 
 ## The complete execution path
 
-When you run a tutorial command, the following code path executes:
+When you run an experiment command, the following code path executes:
 
 ```text
 main

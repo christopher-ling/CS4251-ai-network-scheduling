@@ -125,6 +125,26 @@ class CollectiveContentionTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 MODULE.validate_fixed_inputs(full_config, root)
 
+    def test_fixed_input_validation_supports_example_filenames(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "network.yml").write_text(
+                "topology: [ Ring ]\nnpus_count: [ 4 ]\n"
+                "bandwidth: [ 50.0 ]\nlatency: [ 500.0 ]\n"
+            )
+            (root / "system.json").write_text(json.dumps({
+                "all-reduce-implementation": ["ring"],
+                "active-chunks-per-dimension": 4,
+            }))
+            config = {
+                "topology_npus": 4,
+                "bandwidth_GBps": 50.0,
+                "latency_ns": 500.0,
+                "network_configuration": "network.yml",
+                "system_configuration": "system.json",
+            }
+            MODULE.validate_fixed_inputs(config, root)
+
 
 if __name__ == "__main__":
     unittest.main()

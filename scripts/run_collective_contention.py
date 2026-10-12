@@ -102,7 +102,9 @@ def build_scenarios(config: dict, requested: set[str]) -> list[dict]:
 
 
 def validate_fixed_inputs(config: dict, config_dir: Path) -> None:
-    network_text = (config_dir / "network_64npu_ring.yml").read_text()
+    network_name = config.get("network_configuration", "network_64npu_ring.yml")
+    system_name = config.get("system_configuration", "system_ring.json")
+    network_text = (config_dir / network_name).read_text()
     expected_network_values = {
         "npus_count": config["topology_npus"],
         "bandwidth": config["bandwidth_GBps"],
@@ -111,15 +113,15 @@ def validate_fixed_inputs(config: dict, config_dir: Path) -> None:
     for key, expected in expected_network_values.items():
         match = re.search(rf"^{key}:\s*\[\s*([0-9.]+)\s*\]", network_text, re.MULTILINE)
         if not match or float(match.group(1)) != float(expected):
-            raise ValueError(f"{key} in network_64npu_ring.yml must equal {expected}")
+            raise ValueError(f"{key} in {network_name} must equal {expected}")
     if not re.search(r"^topology:\s*\[\s*Ring\s*\]", network_text, re.MULTILINE):
-        raise ValueError("network_64npu_ring.yml must use the Ring topology")
+        raise ValueError(f"{network_name} must use the Ring topology")
 
-    system = json.loads((config_dir / "system_ring.json").read_text())
+    system = json.loads((config_dir / system_name).read_text())
     if system.get("all-reduce-implementation") != ["ring"]:
-        raise ValueError("system_ring.json must select Ring AllReduce")
+        raise ValueError(f"{system_name} must select Ring AllReduce")
     if system.get("active-chunks-per-dimension") != 4:
-        raise ValueError("system_ring.json must use four active chunks per dimension")
+        raise ValueError(f"{system_name} must use four active chunks per dimension")
 
 
 def nearest_rank_percentile(values: Iterable[float], percentile: float) -> float:
@@ -328,8 +330,10 @@ def run_case(
             indent=2,
         ) + "\n"
     )
-    shutil.copy2(config_dir / "network_64npu_ring.yml", case_dir / "network.yml")
-    shutil.copy2(config_dir / "system_ring.json", case_dir / "system.json")
+    network_name = config.get("network_configuration", "network_64npu_ring.yml")
+    system_name = config.get("system_configuration", "system_ring.json")
+    shutil.copy2(config_dir / network_name, case_dir / "network.yml")
+    shutil.copy2(config_dir / system_name, case_dir / "system.json")
 
     binary = astra / "build/astra_analytical/build/bin/AstraSim_Analytical_Congestion_Aware"
     if not binary.is_file():
