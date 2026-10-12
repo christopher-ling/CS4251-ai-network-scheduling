@@ -1,7 +1,7 @@
 # Sections 1-3 fixed experiment inputs
 
-These files define the controlled environment used by the introductory
-ASTRA-sim tutorial and its recorded results.
+These files define the controlled environment used by the methodology
+Sections 1-3 implementation and its recorded results.
 
 - `experiment.json` contains workload and sweep parameters.
 - `network_64npu_ring.yml` fixes a 64-endpoint physical ring.

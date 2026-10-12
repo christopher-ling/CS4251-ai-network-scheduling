@@ -10,11 +10,10 @@ The project evaluates network scheduling for already-running distributed trainin
 
 ASTRA-sim is used for execution-timing simulation. Current workloads are synthetic dependency graphs rather than profiled model training runs.
 
-## Getting started
+## Running the methodology implementation
 
-Follow [Installation and quickstart](labs/00-quickstart.md) to clone the pinned simulator, build the Docker environment, and mount both repositories.
-
-With the environment configured, run inside Docker:
+Build the pinned ASTRA-sim revision with its Docker environment, then mount the
+ASTRA-sim checkout at `/app/astra-sim` and this repository at `/app/team`. Run:
 
 ```sh
 cd /app/team
@@ -25,15 +24,13 @@ python3 scripts/run_sections_1_to_3.py \
 
 This command reproduces methodology Sections 1-3: one compute/AllReduce iteration, a matched single-job baseline, and a 1/2/4/8/16-job contention sweep. It captures inputs and logs and requires completion of all 64 simulated endpoints. Outputs are written to the mounted team repository.
 
-## Experiments
+## Methodology implementation
 
-| Tutorial section | Objective | Source changes required |
+| Stage | Objective | Primary artifacts |
 |---|---|---|
-| [1. Training iteration](labs/sections-1-3/01-training-iteration.md) | Understand compute, AllReduce, dependencies, and traces | None; generated traces |
-| [2. Single-job baseline](labs/sections-1-3/02-single-job-baseline.md) | Measure the fixed workload without inter-job contention | None |
-| [3. Concurrent jobs](labs/sections-1-3/03-concurrent-jobs.md) | Hold inputs fixed while sweeping 1/2/4/8/16 active jobs | None |
-
-Start with the [Sections 1-3 tutorial index](labs/sections-1-3/README.md). The earlier [bandwidth sensitivity](labs/01-allreduce-bandwidth.md), [16-NPU contention study](labs/02-training-and-contention.md), and [admission prototype](labs/03-admission-prototype.md) remain supplementary experiments.
+| 1. Training iteration | Generate the compute/AllReduce dependency trace | `scripts/run_sections_1_to_3.py` |
+| 2. Single-job baseline | Measure the fixed workload without inter-job contention | `results/sections-1-3/section2_single_job_baseline/` |
+| 3. Concurrent jobs | Hold inputs fixed while sweeping 1/2/4/8/16 active jobs | `results/sections-1-3/contention_summary.csv` |
 
 See [Development workflow](docs/development-workflow.md) for the distinction between running experiments, editing configurations, generating traces, and modifying the scheduler.
 
@@ -99,7 +96,6 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 ```text
 configs/    Fixed and reference network, system, and workload parameters
 scripts/    Reusable experiment launchers, trace generation, and analysis
-labs/       Guided tutorials that call the shared implementations
 docs/       Architecture, terminology, workflow, and tool assessment
 patches/    Optional coordinated admission prototype
 results/    Recorded logs, summaries, input descriptions, and versions

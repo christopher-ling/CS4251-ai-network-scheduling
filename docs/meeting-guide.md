@@ -2,8 +2,10 @@
 
 ## Methodology Sections 1-3
 
-Start with the fixed 64-NPU experiment in `labs/sections-1-3/`. Explain the
-compute -> AllReduce dependency chain, identify the 6.362602-ms matched
+Start with the fixed 64-NPU experiment defined by
+`configs/sections-1-3/experiment.json` and
+`scripts/run_sections_1_to_3.py`. Explain the compute -> AllReduce dependency
+chain, identify the 6.362602-ms matched
 single-job baseline, and show that job count is the only intentional variable
 in the 1/2/4/8/16-job sweep. Mean slowdown remains near 1.0x through four jobs,
 then reaches 1.844x at eight jobs and 3.599x at sixteen jobs. Describe this as a

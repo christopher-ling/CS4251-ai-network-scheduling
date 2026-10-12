@@ -11,16 +11,17 @@
 | Implement admission policy | `Workload.cc` and `Workload.hh` patch | Required | Required |
 
 The canonical implementation of methodology Sections 1-3 is
-`scripts/run_sections_1_to_3.py`. The files under `labs/sections-1-3/` explain
-that implementation; they are not separate copies. Fixed research inputs live
-under `configs/sections-1-3/`, and measured evidence lives under
+`scripts/run_sections_1_to_3.py`. Fixed research inputs live under
+`configs/sections-1-3/`, and measured evidence lives under
 `results/sections-1-3/`.
 
-VS Code is an editor, not a simulator prerequisite. Tutorials can use it to inspect files, generate traces, or develop simulator behavior. Identify the activity before treating it as part of installation.
+VS Code is an optional editor, not a simulator prerequisite. Experiment
+execution depends on the pinned ASTRA-sim checkout, Docker environment, and
+recorded configuration inputs.
 
 ## Preparation for presenting
 
-1. Reproduce tutorial Section 1 and explain the generated dependency chain.
+1. Reproduce Section 1 and explain the generated dependency chain.
 2. Reproduce Section 2 and identify the matched isolated-job JCT.
 3. Reproduce Section 3 and explain what stays fixed as concurrency increases.
 4. Review the optional admission prototype only after the baseline is clear.
@@ -28,7 +29,7 @@ VS Code is an editor, not a simulator prerequisite. Tutorials can use it to insp
 
 Do not repeat installation when the image and compiled pinned simulator already exist.
 
-## Editor inspection
+## Implementation map
 
 Open the team repository with File → Open Folder in VS Code, or use another editor. Inspect these files in order:
 
@@ -41,9 +42,11 @@ Open the team repository with File → Open Folder in VS Code, or use another ed
 
 Inspecting files does not require editing them. The baseline uses the checked-in inputs.
 
-## Configuration exercise
+## Custom configuration runs
 
-Create a copy of `configs/Ring_16npus.yml` named `configs/Ring_16npus_custom.yml`. Open it and select a positive bandwidth, for example 30.0 GB/s. Keep the other fields fixed. Save it and run inside the mounted container:
+For an additional capacity-sensitivity point, copy `configs/Ring_16npus.yml`
+to `configs/Ring_16npus_custom.yml` and select a positive bandwidth, for example
+30.0 GB/s. Keep the other fields fixed and run inside the mounted container:
 
 ```sh
 mkdir -p /app/team/results/custom
@@ -57,9 +60,13 @@ mkdir -p /app/team/results/custom
 
 This optional case has no published reference timing. Verify all ranks finish and record the actual result separately. The intervention is a configuration value, not a change to the simulator algorithm.
 
-## Trace-generation exercise
+## Trace generation and provenance
 
-After Experiment 2, read `results/learning/training_cycle_50GBps/description.json` and the generator. The trace has three AllReduce phases, four 100-us compute phases, and explicit dependencies. Then read the independent-job group definitions for the shared-ring case.
+The recorded training-cycle workload is described by
+`results/learning/training_cycle_50GBps/description.json` and its generator.
+The trace has three AllReduce phases, four 100-us compute phases, and explicit
+dependencies. The independent-job group definitions identify the communicator
+membership used by the shared-ring case.
 
 The result descriptions record provenance; the launcher does not read them as inputs. Editing a description after a run does not change the workload. To change generated operations, modify generator parameters and rerun with a separate output directory.
 

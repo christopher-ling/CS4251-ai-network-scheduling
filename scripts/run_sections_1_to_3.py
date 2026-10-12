@@ -27,7 +27,7 @@ FINISH_PATTERN = re.compile(r"sys\[(\d+)\] finished, (\d+) cycles")
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Run the fixed Sections 1-3 ASTRA-sim tutorial experiment."
+        description="Run the fixed Sections 1-3 ASTRA-sim methodology experiment."
     )
     parser.add_argument("--astra", type=Path, required=True, help="ASTRA-sim checkout")
     parser.add_argument(
