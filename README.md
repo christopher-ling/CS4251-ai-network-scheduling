@@ -1,5 +1,9 @@
 # Network Scheduling for Distributed AI Training
 
+> This branch includes the team onboarding guide. Start with
+> [`guide/README.md`](guide/README.md). The guide calls the same experiment
+> runner and configurations as the research implementation.
+
 This repository studies how collective communication from already-running
 distributed training jobs should share a congested network. GPU placement is
 fixed before each experiment. The research target is network scheduling:
