@@ -62,18 +62,25 @@ Open `configs/Ring_16npus.yml`: the 16 endpoints form a bidirectional physical r
 
 Distinguish collective payload, link capacity, collective algorithm, and physical topology. The bandwidth comparison holds the workload fixed; it is not a scheduling-policy comparison. See [Development workflow](../docs/development-workflow.md) for an editor-based inspection exercise.
 
-## Run the next experiments
+## Run methodology Sections 1-3
 
 Inside the same container:
 
 ```sh
 cd /app/team
-python3 scripts/run_learning_experiments.py --astra /app/astra-sim
+python3 scripts/run_sections_1_to_3.py \
+  --astra /app/astra-sim \
+  --output results/sections-1-3
 ```
 
-This generates traces, runs eight small scenarios, checks all 16 endpoints finish, and saves configurations, logs, version records, trace inspection, and `results/learning/summary.csv`. Generated binary traces are ignored by Git because the script reproduces them.
+This generates traces, runs the one-iteration example, the single-job baseline,
+and the 1/2/4/8/16-job sweep. It checks all 64 endpoints finish and saves exact
+inputs, commands, raw logs, version records, CSV summaries, and a chart.
+Generated binary traces are ignored by Git because the script reproduces them.
 
-Read [the training-cycle and contention lab](02-training-and-contention.md) to interpret the results. Several results correspond to inactive endpoints that finish quickly; the summary reports only active job groups and takes the maximum completion time over each group's members.
+Read the [Sections 1-3 tutorial](sections-1-3/README.md) to interpret the
+results. Inactive endpoints finish quickly; the summaries report only active
+job groups and use the maximum completion time among each job's four ranks.
 
 ## Stop and resume
 
