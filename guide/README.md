@@ -1,54 +1,52 @@
-# Learn ASTRA-sim in VS Code
+# ASTRA-sim tutorial
 
-This tutorial is for someone who has never used ASTRA-sim. You will edit
-simulation inputs in VS Code, run them with named VS Code tasks, and inspect
-the files produced by the simulator. The terminal only starts Docker and
-ASTRA-sim; it is not the subject of the tutorial.
+This tutorial teaches ASTRA-sim by connecting every experiment to the files
+and code that create it. Use any IDE to browse and edit the project. Use its
+terminal to build the simulator and run the experiments when instructed.
 
-Complete these lessons in order:
+Complete the lessons in order:
 
-1. [Set up the VS Code workspace](setup.md)
-2. [Build and change one training trace](training-trace.md)
-3. [Measure one job and change the network](isolated-baseline.md)
-4. [Create contention with several jobs](concurrent-contention.md)
-5. [Connect the files to the Python runner](how-the-code-works.md)
+1. [Set up ASTRA-sim and the project](setup.md)
+2. [Create and change a training trace](training-trace.md)
+3. [Run one job and change the network](isolated-baseline.md)
+4. [Run several jobs and create contention](concurrent-contention.md)
+5. [Understand the experiment runner](how-the-code-works.md)
 
-Each lesson follows the same loop:
-
-```text
-open an input file -> change one value -> predict the effect
-       -> run a named VS Code task -> inspect generated files
-       -> explain what ASTRA-sim modeled
-```
-
-## What you are actually simulating
-
-ASTRA-sim does not train a model and does not calculate gradients. It receives
-a description of work that a real distributed training job would perform:
+Each lesson follows this process:
 
 ```text
-GPU compute -> gradients are ready -> AllReduce -> updated values are available
+read the relevant file -> identify the code responsible
+       -> change one input -> predict the effect
+       -> run ASTRA-sim -> inspect the generated evidence
 ```
 
-For this project, one simulated job has four GPU **ranks**. Each rank performs
-compute, then all four ranks participate in the same AllReduce. The system
-configuration says to perform that collective using a ring algorithm. The
-network configuration says the simulated machines are connected by a physical
-ring with limited-capacity links. ASTRA-sim calculates when the operations
-finish, including waiting caused by overlapping communication.
+## What ASTRA-sim does
 
-## The four kinds of files
+ASTRA-sim models the timing of distributed AI systems. It does not train a
+neural network or calculate numerical gradients. The project gives it a trace
+describing work that a real training job would perform:
 
-| File | Question it answers |
+```text
+GPU compute -> local gradients become ready -> AllReduce
+            -> every GPU receives the combined result -> next compute phase
+```
+
+One simulated job in this tutorial has four GPU **ranks**. The workload trace
+says when compute and AllReduce become ready. The system configuration says
+how to implement AllReduce. The network configuration says which physical
+links carry the communication. ASTRA-sim calculates when each operation and
+job finishes, including waiting caused by shared links.
+
+## What each file controls
+
+| File | Role in the simulation |
 |---|---|
-| `guide/workspace/experiment.json` | What work do the jobs perform, and how many jobs run? |
-| `guide/workspace/system_ring.json` | Which collective algorithm carries out AllReduce? |
-| `guide/workspace/network_64npu_ring.yml` | What physical network carries the messages? |
-| `scripts/run_collective_contention.py` | How are traces generated, ASTRA-sim launched, and results summarized? |
+| `guide/workspace/experiment.json` | Workload size, iteration count, GPU count, and concurrent-job sweep |
+| `guide/workspace/system_ring.json` | Collective algorithm and chunk behavior |
+| `guide/workspace/network_64npu_ring.yml` | Physical topology, bandwidth, and latency |
+| `scripts/run_collective_contention.py` | Trace generation, ASTRA-sim invocation, validation, and analysis |
+| `compose.yaml` | Docker environment containing both repositories |
 
-The files in `guide/workspace/` are practice copies. Editing them will not
-change the checked-in research results. If an experiment becomes confusing,
-open VS Code's **Source Control** panel, select the changed file, and choose
-**Discard Changes**.
-
-Use [the glossary](../docs/glossary.md) whenever a term is unfamiliar.
+The `guide/workspace/` files are editable practice copies. The original
+research inputs remain in `configs/collective-contention/`. Use the
+[glossary](../docs/glossary.md) whenever a term is unfamiliar.

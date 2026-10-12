@@ -1,8 +1,8 @@
 # Editable tutorial inputs
 
 These are safe practice copies of the research inputs in
-`configs/collective-contention/`. The VS Code tutorial tasks read this folder,
-so edits here do not change the recorded research configuration.
+`configs/collective-contention/`. The tutorial commands read this folder, so
+edits here do not change the recorded research configuration.
 
 | File | What it controls |
 |---|---|
@@ -14,5 +14,5 @@ so edits here do not change the recorded research configuration.
 and are checked against the values in the network YAML. When changing either
 network value, edit both files so the runner can catch accidental mismatches.
 
-Use **Source Control: Discard Changes** in VS Code to return these files to the
-starting values after an exercise.
+Use your IDE's source-control interface or `git restore guide/workspace` to
+return these files to the starting values after an exercise.

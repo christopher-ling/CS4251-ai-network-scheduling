@@ -3,8 +3,8 @@
 Do this page after the three experiments. The goal is to recognize the parts
 of the code, not to understand every Python statement.
 
-Open `scripts/run_collective_contention.py` in VS Code and use **Cmd+F** to
-find these functions in order:
+Open `scripts/run_collective_contention.py` and use your IDE's search to find
+these functions in order:
 
 | Function | Its job |
 |---|---|
@@ -49,3 +49,25 @@ change an experiment              -> edit JSON/YAML or trace generation
 add a new scheduling mechanism    -> edit simulator scheduling code
 add/change packet transport       -> edit the ns-3 backend
 ```
+
+## The complete execution path
+
+When you run a tutorial command, the following code path executes:
+
+```text
+main
+  -> read experiment.json
+  -> validate_fixed_inputs
+  -> build_groups
+  -> build_scenarios
+  -> write_traces for every rank
+  -> run_case launches AstraSim_Analytical_Congestion_Aware
+  -> parse each rank's finish time
+  -> add_slowdown_and_summarize
+  -> write CSV, Markdown, and SVG results
+```
+
+The project runner is regular Python and can be changed for new workloads or
+analysis. The ASTRA-sim executable is compiled C++ and implements simulation
+behavior. Keeping this boundary clear helps determine where future scheduler
+or transport work belongs.

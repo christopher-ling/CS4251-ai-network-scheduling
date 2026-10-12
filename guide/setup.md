@@ -1,65 +1,66 @@
-# Set up the VS Code workspace
+# Set up ASTRA-sim and the project
 
-## Goal
+## Repository layout
 
-At the end of this page, VS Code will show two folders in one window:
+Create one parent directory containing two separate repositories:
 
 ```text
-Team project and tutorial                 <- files you will edit
-ASTRA-sim engine (read after tutorial)    <- upstream simulator source
+astra-project/
+├── astra-sim/                       upstream simulator engine
+└── CS4251-ai-network-scheduling/    team code, inputs, guide, and results
 ```
 
-They are separate Git repositories because the first belongs to the class
-team, while the second belongs to the ASTRA-sim maintainers. They are siblings
-so Docker can mount both without copying one project into the other.
+They remain separate because they have different owners and Git histories.
+Keeping them beside each other allows the Docker environment to mount both.
 
-## One-time preparation
+## One-time installation
 
-Docker Desktop must be open. In a terminal, create one parent folder and clone
-the two repositories into it:
+Open Docker Desktop, then run:
 
 ```sh
 mkdir -p ~/Desktop/School/astra-project
 cd ~/Desktop/School/astra-project
+
 git clone https://github.com/astra-sim/astra-sim.git
-git clone --branch tutorial/astra-sim https://github.com/christopher-ling/CS4251-ai-network-scheduling.git
+git clone --branch tutorial/astra-sim \
+  https://github.com/christopher-ling/CS4251-ai-network-scheduling.git
+
 cd astra-sim
 git checkout 4ce9ecfe746a3ee5fe47559a11d91644d641fa7f
 git submodule update --init --recursive
+cd ../CS4251-ai-network-scheduling
 ```
 
-The long value is a Git commit ID. It makes every teammate use the exact
-ASTRA-sim version that produced the project's reference results. Seeing
-`detached HEAD` after checkout is expected because this dependency is pinned.
+What these commands do:
 
-## Open the supplied workspace
+- `git clone` downloads the simulator and the team project.
+- `git checkout <commit>` selects the exact ASTRA-sim version used to produce
+  the reference results. A detached-HEAD message is normal here.
+- `git submodule update` downloads the specific Chakra and backend code needed
+  by that ASTRA-sim version.
 
-In VS Code, choose **File > Open Workspace from File...**, then open:
+Open the `astra-project` directory in your IDE so you can browse both folders.
 
-```text
-CS4251-ai-network-scheduling/astra-sim-tutorial.code-workspace
+## Build the environment
+
+From `CS4251-ai-network-scheduling`, run:
+
+```sh
+docker compose up -d --build
+docker compose exec astra bash -lc \
+  'cd /app/astra-sim && ./build/astra_analytical/build.sh'
 ```
 
-In the Explorer, expand **Team project and tutorial**, then open these three
-files side by side:
+The first command builds and starts the Linux container. `compose.yaml` mounts
+the upstream simulator at `/app/astra-sim` and the team project at `/app/team`.
+The second command compiles the congestion-aware analytical backend. You do
+not need to rebuild it before every experiment unless its source changes.
 
-- `guide/workspace/experiment.json`
-- `guide/workspace/system_ring.json`
-- `guide/workspace/network_64npu_ring.yml`
+Check that the experiment runner is available:
 
-Read the field names only. You do not need to understand every value yet.
+```sh
+docker compose exec astra \
+  python3 scripts/run_collective_contention.py --help
+```
 
-## Build with VS Code tasks
-
-Open the Command Palette with **Cmd+Shift+P**, select **Tasks: Run Task**, and
-run these tasks in order:
-
-1. **Setup 1: Build and start Docker**
-2. **Setup 2: Compile ASTRA-sim analytical backend**
-
-These tasks show their output in VS Code's integrated terminal. The first can
-take several minutes on a new computer. The second creates the analytical
-simulator binary used by all three lessons.
-
-If both tasks finish without an error, continue to
-[Build and change one training trace](training-trace.md).
+Continue to [Create and change a training trace](training-trace.md).

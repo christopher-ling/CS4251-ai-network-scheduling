@@ -1,14 +1,13 @@
-# Build and change one training trace
+# Create and change a training trace
 
-## What this lesson teaches
+## Goal
 
-A **trace** is ASTRA-sim's to-do list for each simulated GPU. You will change
-that to-do list through JSON, run it, and inspect a readable preview of the
-binary Chakra trace that ASTRA-sim receives.
+Learn how the project describes GPU compute and AllReduce, then change that
+description and observe the simulated completion time.
 
-## 1. Read the workload inputs
+## Read the inputs and code
 
-Open `guide/workspace/experiment.json` in VS Code. Find:
+Open `guide/workspace/experiment.json` and find:
 
 ```json
 "compute_phase_us": 100,
@@ -16,68 +15,70 @@ Open `guide/workspace/experiment.json` in VS Code. Find:
 "message_bytes_per_rank": 16777216
 ```
 
-These values mean:
-
-- each compute operation lasts 100 simulated microseconds;
-- the demonstration contains one compute/AllReduce iteration;
-- each of the four ranks contributes 16 MiB to AllReduce.
-
-The trace ends with one final compute phase, so the operation sequence is:
+This describes one iteration with 100 microseconds of compute, one 16-MiB
+AllReduce per rank, and a final 100-microsecond compute operation:
 
 ```text
-compute 100 us -> AllReduce 16 MiB/rank -> final compute 100 us
+compute -> AllReduce -> final compute
 ```
 
-## 2. Run the starting version
+Open `scripts/run_collective_contention.py` and find `write_traces`. This
+function creates each compute and collective node. The `data_deps` field makes
+each operation wait for the preceding node. For an AllReduce node, the code
+sets:
 
-Use **Cmd+Shift+P > Tasks: Run Task > Tutorial: Run training trace**.
+```text
+comm_type = ALL_REDUCE
+comm_size = message_bytes_per_rank
+pg_name   = this job's communicator-group ID
+```
 
-When it finishes, use the VS Code Explorer to open:
+The code writes one binary Chakra `.et` trace per simulated rank.
+
+## Run the one-iteration simulation
+
+From the team repository, run:
+
+```sh
+docker compose exec astra python3 scripts/run_collective_contention.py \
+  --astra /app/astra-sim \
+  --config guide/workspace \
+  --scenarios iteration \
+  --output results/onboarding/training-trace
+```
+
+The options mean:
+
+- `--astra` tells the runner where the simulator is mounted;
+- `--config` selects the editable tutorial inputs;
+- `--scenarios iteration` requests the one-iteration demonstration;
+- `--output` selects the generated-results directory.
+
+Open these generated files:
 
 ```text
 results/onboarding/training-trace/training_iteration/trace_preview.json
+results/onboarding/training-trace/training_iteration/command.json
+results/onboarding/training-trace/per_job_summary.csv
 ```
 
-Read the first job:
+`trace_preview.json` is the readable version of the binary trace.
+`command.json` records the exact ASTRA-sim binary and input files used.
+`per_job_summary.csv` contains JCT. The starting JCT should be about
+`2187.534` simulated microseconds.
 
-- `simulated_gpu_ranks` lists the four participants;
-- every operation waits for the preceding operation;
-- `AllReduce` has no fixed duration in the trace because ASTRA-sim calculates
-  its duration from the collective and network configurations.
+## Change the workload
 
-Then open `results/onboarding/training-trace/per_job_summary.csv`. The `jct_us`
-cell is the simulated completion time. It should be about `2187.534` us with
-the starting inputs.
+Change `compute_phase_us` from `100` to `200`. There are two compute nodes, so
+predict how much JCT should increase. Run the same command and inspect the CSV.
 
-## 3. Edit the trace instead of copying another command
+Then change `message_bytes_per_rank` from `16777216` to `8388608` (8 MiB).
+Predict whether AllReduce becomes faster or slower, rerun, and compare JCT.
 
-Return to `guide/workspace/experiment.json` and change:
+Restore the practice input when finished:
 
-```json
-"compute_phase_us": 200
+```sh
+git restore guide/workspace/experiment.json
 ```
 
-Before running, make a prediction: there are two compute operations, and each
-became 100 us longer, so JCT should grow by about 200 us. Run **Tutorial: Run
-training trace** again and compare `jct_us` in the CSV.
-
-Now change:
-
-```json
-"message_bytes_per_rank": 8388608
-```
-
-This is 8 MiB. Predict whether AllReduce and JCT should become shorter or
-longer, run the same task, and inspect `trace_preview.json` and the CSV again.
-
-## 4. Explain what happened
-
-You edited a workload description. The Python runner converted it into one
-binary Chakra `.et` trace per simulated rank. ASTRA-sim replayed each rank's
-dependencies and used the system and network inputs to calculate the AllReduce
-time. The generated `trace_preview.json` is for people; ASTRA-sim reads the
-binary `.et` files.
-
-Use VS Code's Source Control panel to discard your changes to
-`guide/workspace/experiment.json`, returning to 100 us and 16777216 bytes.
-Then continue to [Measure one job and change the network](isolated-baseline.md).
+Continue to [Run one job and change the network](isolated-baseline.md).

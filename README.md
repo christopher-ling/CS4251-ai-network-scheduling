@@ -1,9 +1,9 @@
 # Network Scheduling for Distributed AI Training
 
-> This branch includes an IDE-first team tutorial. Start with
-> [`guide/README.md`](guide/README.md), open the supplied VS Code workspace,
-> edit the practice inputs, and run the named tasks. The tutorial calls the
-> same experiment runner as the research implementation.
+> This branch includes a hands-on team tutorial. Start with
+> [`guide/README.md`](guide/README.md), edit the practice inputs, run the
+> simulations, and connect each result to the responsible code. The tutorial
+> calls the same experiment runner as the research implementation.
 
 This repository studies how collective communication from already-running
 distributed training jobs should share a congested network. GPU placement is

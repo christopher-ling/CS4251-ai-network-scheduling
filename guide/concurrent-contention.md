@@ -1,69 +1,78 @@
-# Create contention with several jobs
+# Run several jobs and create contention
 
-## What this lesson teaches
+## Goal
 
-**Contention** occurs when communication from different jobs needs the same
-limited links at overlapping times. The workload, collective algorithm, and
-network stay fixed in this lesson. You change only the number of active jobs.
+Hold each job and the network fixed while increasing the number of jobs that
+communicate at the same time.
 
-## 1. Choose the job counts
+## Understand job placement
 
 Open `guide/workspace/experiment.json` and find:
 
 ```json
-"job_counts": [1, 2, 4, 8, 16]
+"maximum_jobs": 16,
+"gpus_per_job": 4,
+"job_counts": [1, 2, 4, 8, 16],
+"placement": "strided"
 ```
 
-Each job receives four simulated GPUs. All jobs arrive at time zero and issue
-the same three AllReduces. Their rank placement makes different logical jobs
-traverse shared portions of the 64-NPU physical ring.
+Open `build_groups` in `scripts/run_collective_contention.py`. It assigns four
+ranks to every job. For example, job 1 uses ranks `[0, 16, 32, 48]`. This
+strided placement makes each job's logical AllReduce cross long portions of
+the 64-NPU physical ring, so simultaneous jobs request shared links.
 
-Temporarily shorten the sweep to:
+`build_scenarios` turns `job_counts` into the cases `concurrent_02_jobs`,
+`concurrent_04_jobs`, and so on. Every case keeps the per-job compute,
+AllReduce size, collective algorithm, topology, and arrival time fixed.
+
+## Run a short sweep
+
+First change `job_counts` to:
 
 ```json
 "job_counts": [1, 2, 4]
 ```
 
-## 2. Run and inspect the smaller experiment
+Run:
 
-Use **Tasks: Run Task > Tutorial: Run contention sweep**. Open:
+```sh
+docker compose exec astra python3 scripts/run_collective_contention.py \
+  --astra /app/astra-sim \
+  --config guide/workspace \
+  --scenarios contention \
+  --output results/onboarding/contention
+```
+
+Open:
 
 ```text
 results/onboarding/contention/contention_summary.csv
+results/onboarding/contention/per_job_summary.csv
 results/onboarding/contention/contention-slowdown.svg
 ```
 
-VS Code previews the SVG chart. In the CSV:
+The runner automatically includes a one-job baseline. `mean_slowdown` divides
+each contended JCT by that baseline, while `makespan_us` records when the final
+active job finishes.
 
-- `mean_jct_us` is mean job completion time;
-- `mean_slowdown` divides contended JCT by the one-job baseline;
-- `makespan_us` is when the final active job finishes.
+## Run the full sweep
 
-The runner includes the one-job baseline automatically so slowdown always has
-a matching denominator.
+Restore `job_counts` to `[1, 2, 4, 8, 16]`, predict when shared links will
+cause noticeable slowdown, and rerun the same command. The reference results
+show about `1.844x` mean slowdown at eight jobs and `3.599x` at sixteen jobs.
 
-## 3. Increase contention
+Open
+`results/onboarding/contention/concurrent_16_jobs/trace_preview.json`. It shows
+sixteen independent jobs, each with four ranks and the same operation chain.
+The difference in completion time comes from their overlapping use of the
+network model.
 
-Restore the full list:
+## What this proves
 
-```json
-"job_counts": [1, 2, 4, 8, 16]
-```
+This experiment shows that the constructed analytical ring creates contention
+as concurrency increases. It does not yet demonstrate an improved scheduler.
+The next research work must compare explicit scheduling policies. Packet-level
+queueing, loss, HPCC, and possible MLTCP evaluation require the ns-3 backend.
 
-Predict where slowdown will become noticeable, then run the task again. The
-checked-in reference results show little change through four jobs, about
-`1.844x` mean slowdown at eight jobs, and about `3.599x` at sixteen jobs.
-
-Open one generated `trace_preview.json` under
-`results/onboarding/contention/concurrent_16_jobs/`. It shows sixteen jobs,
-each with its own four-rank communicator group and the same operation chain.
-
-## 4. State the conclusion carefully
-
-This experiment demonstrates that the constructed analytical ring produces
-shared-resource contention as job concurrency increases. It does not yet show
-that a new network scheduler improves performance. The next research stage is
-to compare explicit admission policies and qualify the packet-level ns-3
-backend for queue, utilization, HPCC, and possible MLTCP measurements.
-
-Continue to [Connect the files to the Python runner](how-the-code-works.md).
+Restore the input with `git restore guide/workspace/experiment.json`, then
+continue to [Understand the experiment runner](how-the-code-works.md).
