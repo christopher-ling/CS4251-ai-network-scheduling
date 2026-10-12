@@ -19,11 +19,11 @@ docker build -t astra-sim:latest -f Dockerfile .
 cd ..
 ```
 
-Check out this onboarding branch in the team repository:
+Check out this branch in the team repository:
 
 ```sh
 cd CS4251-ai-network-scheduling
-git switch tutorial/astra-sim-onboarding
+git switch tutorial/astra-sim
 cd ..
 ```
 
