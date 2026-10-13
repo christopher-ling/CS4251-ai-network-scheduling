@@ -63,6 +63,34 @@ class CollectiveContentionTests(unittest.TestCase):
         self.assertAlmostEqual(MODULE.jain_fairness([1, 1, 1]), 1.0)
         self.assertLess(MODULE.jain_fairness([1, 1, 3]), 1.0)
 
+    def test_baseline_only_run_can_write_results_without_iteration_demo(self):
+        row = {
+            "case": "single_job_baseline",
+            "iterations": 3,
+            "jct_us": 6362.602,
+            "compute_total_us": 400,
+        }
+        summary = {
+            "job_count": 1,
+            "mean_jct_us": 6362.602,
+            "p95_jct_us": 6362.602,
+            "mean_slowdown": 1.0,
+            "max_slowdown": 1.0,
+            "jain_fairness_completion_rate": 1.0,
+        }
+        config = {
+            "topology_npus": 64,
+            "gpus_per_job": 4,
+            "bandwidth_GBps": 50.0,
+            "message_bytes_per_rank": 16777216,
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "README.md"
+            MODULE.write_results_markdown(output, config, [summary], [row])
+            text = output.read_text()
+        self.assertIn("3-iteration single-job baseline", text)
+        self.assertNotIn("one-iteration trace completed", text)
+
     def test_fixed_input_validation_detects_mismatched_topology(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

@@ -104,6 +104,7 @@ See the [project plan](docs/project-plan.md) and
 - [Methodology traceability](docs/methodology-traceability.md)
 - [Terminology](docs/glossary.md)
 - [ASTRA-sim assessment](docs/tool-assessment.md)
+- [How the contention experiment works](docs/contention-model.md)
 
 ## Attribution
 
